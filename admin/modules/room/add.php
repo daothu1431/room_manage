@@ -30,6 +30,10 @@ if(isPost()) {
         $errors['giathue']['required'] = '** Bạn chưa nhập giá phòng!';
     }
 
+    if(empty(trim($body['dientich']))) {
+        $errors['dientich']['required'] = '** Bạn chưa nhập diện tích phòng!';
+    }
+
     if(empty(trim($body['tiencoc']))) {
         $errors['tiencoc']['required'] = '** Bạn chưa nhập giá tiền cọc!';
     }
@@ -104,15 +108,16 @@ layout('navbar', 'admin', $data);
                             <input type="text" placeholder="Giá thuê (đ)" name="giathue" id="" class="form-control" value="<?php echo old('giathue', $old); ?>">
                             <?php echo form_error('giathue', $errors, '<span class="error">', '</span>'); ?>
                         </div>
+                    </div>
 
+                    <div class="col-5">
+                        
                         <div class="form-group">
                             <label for="">Giá tiền cọc <span style="color: red">*</span></label>
                             <input type="text" placeholder="Giá cọc (đ)" name="tiencoc" id="" class="form-control" value="<?php echo old('tiencoc', $old); ?>">
                             <?php echo form_error('tiencoc', $errors, '<span class="error">', '</span>'); ?>
                         </div>
-                    </div>
 
-                    <div class="col-5">
                         <div class="form-group">
                             <label for="">Ngày lập hóa đơn</label>
                             <select name="ngaylaphd" id="" class="form-select">
@@ -137,18 +142,6 @@ layout('navbar', 'admin', $data);
                             </select>
                         </div>
 
-                        <div class="form-group">
-                            <label for="">Ngày vào ở</label>
-                            <input type="date" name="ngayvao" id="" class="form-control" value="<?php echo old('ngayvao', $old); ?>">
-                            <?php echo form_error('ngayvao', $errors, '<span class="error">', '</span>'); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">Thời hạn hợp đồng</label>
-                            <input type="date" name="ngayra" id="" class="form-control" value="<?php echo old('ngayra', $old); ?>">
-                            <?php echo form_error('ngayra', $errors, '<span class="error">', '</span>'); ?>
-                        </div>
-                    
                     </div>                  
                     <div class="from-group">                    
                             <div class="btn-row">

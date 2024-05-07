@@ -4,41 +4,23 @@ if(!defined('_INCODE'))
 die('Access denied...');
 
 $data = [
-    'pageTitle' => 'Danh sách phòng trọ'
+    'pageTitle' => 'Quản lý hợp đồng thuê trọ'
 ];
 
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
-
-
 // Xử lý lọc dữ liệu
-// $allRoom = getRaw("SELECT id, tenphong, soluong, trangthai FROM room ORDER BY tenphong");
 $filter = '';
 if (isGet()) {
     $body = getBody('get');
-    
-
-    // Xử lý lọc theo từ khóa
-    if(!empty($body['keyword'])) {
-        $keyword = $body['keyword'];
-        
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-
-        $filter .= " $operator tenphong LIKE '%$keyword%'";
-
-    }
 
     //Xử lý lọc Status
     if(!empty($body['status'])) {
         $status = $body['status'];
 
         if($status == 2) {
-            $statusSql = 0;
+            $statusSql = 2;
         } else {
             $statusSql = $status;
         }
@@ -49,12 +31,12 @@ if (isGet()) {
             $operator = 'WHERE';
         }
         
-        $filter .= "$operator trangthai=$statusSql";
+        $filter .= "$operator trangthaihopdong=$statusSql";
     }
 }
 
 /// Xử lý phân trang
-$allTenant = getRows("SELECT id FROM room $filter");
+$allTenant = getRows("SELECT id FROM contract $filter");
 $perPage = _PER_PAGE; // Mỗi trang có 3 bản ghi
 $maxPage = ceil($allTenant / $perPage);
 
@@ -68,13 +50,16 @@ if(!empty(getBody()['page'])) {
     $page = 1;
 }
 $offset = ($page - 1) * $perPage;
-$listAllroom = getRaw("SELECT * FROM room $filter ORDER BY tenphong ASC LIMIT $offset, $perPage");
+$listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, tiencoc, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, zalo FROM contract 
+INNER JOIN room ON contract.room_id = room.id
+INNER JOIN tenant ON contract.tenant_id = tenant.id
+$filter LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
 if (!empty($_SERVER['QUERY_STRING'])) {
     $queryString = $_SERVER['QUERY_STRING'];
-    $queryString = str_replace('module=room','', $queryString);
+    $queryString = str_replace('module=contract','', $queryString);
     $queryString = str_replace('&page='.$page, '', $queryString);
     $queryString = trim($queryString, '&');
     $queryString = '&'.$queryString;
@@ -84,13 +69,16 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 if(isset($_POST['deleteMultip'])) {
     $numberCheckbox = $_POST['records'];
         $extract_id = implode(',', $numberCheckbox);
-        $checkDelete = delete('room', "id IN($extract_id)");
+        $checkDelete = delete('contract', "id IN($extract_id)");
         if($checkDelete) {
             setFlashData('msg', 'Xóa thông tin phòng trọ thành công');
             setFlashData('msg_type', 'suc');
         }
-        redirect('admin/?module=room');
+        redirect('admin/?module=contract');
 }
+
+
+
 
 $msg =getFlashData('msg');
 $msgType = getFlashData('msg_type');
@@ -116,33 +104,29 @@ layout('navbar', 'admin', $data);
             <div class="col-3">
                 <div class="form-group">
                     <select name="status" id="" class="form-select">
-                        <option value="0">Chọn trạng thái</option>
-                        <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Đang ở</option>
-                        <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đang trống</option>
+                        <option value="">Chọn trạng thái</option>
+                        <option value="0" <?php echo (!empty($status) && $status==0) ? 'selected':false; ?>>Trong thời hạn</option>
+                        <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="col-4">
-                    <input style="height: 50px" type="search" name="keyword" class="form-control" placeholder="Nhập tên khách cần tìm" value="<?php echo (!empty($keyword))? $keyword:false; ?>" >
             </div>
 
             <div class="col">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
             </div>
             </div>
-            <input type="hidden" name="module" value="room">
+            <input type="hidden" name="module" value="contract">
         </form>
 
         <form action="" method="POST" class="mt-3">
     <div>
   
 </div>
-            <a href="<?php echo getLinkAdmin('room', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
-            <a href="<?php echo getLinkAdmin('room', 'lists'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
+            <a href="<?php echo getLinkAdmin('contract', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
+            <a href="<?php echo getLinkAdmin('contract'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
             <button type="submit" name="deleteMultip" value="Delete" onclick="return confirm('Bạn có chắn chắn muốn xóa không ?')" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa</button>
-            <a href="<?php echo getLinkAdmin('room', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
-            <a href="<?php echo getLinkAdmin('room', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
+            <a href="<?php echo getLinkAdmin('contract', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
+            <a href="<?php echo getLinkAdmin('contract', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
 
             <table class="table table-bordered mt-3">
                 <thead>
@@ -153,62 +137,75 @@ layout('navbar', 'admin', $data);
                         <th></th>
                         <th wìdth="5%">STT</th>
                         <th>Tên phòng</th>
-                        <th>Diện tích</th>
+                        <th>Người đại diện</th>
+                        <th>Tổng thành viên</th>
                         <th>Giá thuê</th>
                         <th>Giá tiền cọc</th>
-                        <th>Khách thuê</th>
-                        <th>Ngày lập hóa đơn</th>
-                        <th>Chu kỳ thu tiền</th>
+                        <th>Chu kỳ thu</th>
+                        <th>Ngày lập</th>
                         <th>Ngày vào ở</th>
-                        <th>Ngày hết hạn</th>
-                        <th>Trạng thái</th>
+                        <th>Thời hạn hợp đồng</th>
+                        <th>Ký hợp đồng</th>
+                        <th>Tình trạng</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
-                <tbody id="roomData">
+                <tbody id="contractData">
         
                     <?php
-                        if(!empty($listAllroom)):
+                        if(!empty($listAllcontract)):
                             $count = 0; // Hiển thi số thứ tự
-                            foreach($listAllroom as $item):
-                                $count ++;
-        
+                            foreach($listAllcontract as $item):
+                                $count ++;      
                     ?>
+
                     <tr>
                         <td>
                                 <input type="checkbox" name="records[]" value="<?= $item['id'] ?>">                    
                         </td>
                                 
                         <td>
-                            <div class="image__room">
+                            <div class="image__contract">
                                 <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/image-room.png" class="image__room-img" alt="">
                             </div>
                         </td>
                         <td><?php echo $count; ?></td>
                         <td><b><?php echo $item['tenphong']; ?></b></td>
-                        <td><?php echo $item['dientich'] ?> m2</td>
+                        <td><?php echo $item['tenkhach'] ?></td>
+                        <td><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/user.svg" alt=""> <?php echo $item['soluongthanhvien'] ?> người</td>
                         <td><b><?php echo number_format($item['giathue'], 0, ',', '.') ?> đ</b></td>
                         <td><b><?php echo number_format($item['tiencoc'], 0, ',', '.') ?> đ</b></td>
-                        <td><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/user.svg" alt=""> <?php echo $item['soluong'] ?>/2 người</td>
-                        <td>Ngày <?php echo $item['ngaylaphd'] ?></td>
                         <td><?php echo $item['chuky'] ?> tháng</td>
-                        <td><?php echo $item['ngayvao'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngayvao'],'d-m-Y'); ?></td> 
-                        <td><?php echo $item['ngayra']  == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngayra'],'d-m-Y'); ?></td> 
-                        <td>                          
-                            <?php 
-                                 echo $item['trangthai'] == 1 ? '<span class="btn-status-suc">Đang ở</span>':'<span class="btn-status-err">Đang trống</span>';
-                            ?>                          
-                        </td>
-                
+                        <td><?php echo $item['ngaylaphopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngaylaphopdong'],'d-m-Y'); ?></td> 
+                        <td><?php echo $item['ngayvaoo'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngayvaoo'],'d-m-Y'); ?></td> 
+                        <td><?php echo $item['thoihanhopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['thoihanhopdong'],'d-m-Y'); ?></td> 
+                        <td><?php echo $item['kyhopdong'] == 0 ? '<i>Khách chưa ký</i>' : '<i>Khách đã ký</i>' ?></td>
+                        <td>
+                            <?php
+
+                                if($item['trangthaihopdong'] == 0) {
+                                    ?> <span class="btn-kyhopdong-suc">Trong thời hạn</span> <?php
+                                }
+
+                                if($item['trangthaihopdong'] == 2) {
+                                    ?> <span class="btn-kyhopdong-err">Đã hết hạn</span> <?php
+                                }
+                                
+                            ?>
+                            <!-- <?php echo $item['trangthaihopdong'] == 0 ? '<span class="btn-status-suc">Trong thời hạn</span>' : '<span class="btn-status-err">Đã kết thúc</span>' ?> -->
+                        </td>                
                         <td class="">
-                            <a href="<?php echo getLinkAdmin('room','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm" ><i class="fa fa-edit"></i> </a>
-                            <a href="<?php echo getLinkAdmin('room','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
+                            <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
+                            <a title="In hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-secondary btn-sm" ><i class="fa fa-print"></i> </a>
+                            <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
+                            <a href="<?php echo getLinkAdmin('contract','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm" ><i class="fa fa-edit"></i> </a>
+                            <a href="<?php echo getLinkAdmin('contract','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
                         </td>                
                          
                     <?php endforeach; else: ?>
                         <tr>
-                            <td colspan="14">
-                                <div class="alert alert-danger text-center">Không có dữ liệu phòng trọ</div>
+                            <td colspan="15">
+                                <div class="alert alert-danger text-center">Không có dữ liệu hợp đồng</div>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -220,7 +217,7 @@ layout('navbar', 'admin', $data);
                 <?php
                     if($page > 1) {
                         $prePage = $page - 1;
-                    echo '<li class="page-item"><a class="page-link" href="'._WEB_HOST_ROOT_ADMIN.'/?module=room'.$queryString. '&page='.$prePage.'">Pre</a></li>';
+                    echo '<li class="page-item"><a class="page-link" href="'._WEB_HOST_ROOT_ADMIN.'/?module=contract'.$queryString. '&page='.$prePage.'">Pre</a></li>';
                     }
                 ?>
 
@@ -236,14 +233,14 @@ layout('navbar', 'admin', $data);
                     }
                     for($index = $begin; $index <= $end; $index++){  ?>
                 <li class="page-item <?php echo ($index == $page) ? 'active' : false; ?> ">
-                    <a class="page-link" href="<?php echo _WEB_HOST_ROOT_ADMIN.'?module=room'.$queryString.'&page='.$index;  ?>"> <?php echo $index;?> </a>
+                    <a class="page-link" href="<?php echo _WEB_HOST_ROOT_ADMIN.'?module=contract'.$queryString.'&page='.$index;  ?>"> <?php echo $index;?> </a>
                 </li>
                 <?php  } ?>
                 
                 <?php
                     if($page < $maxPage) {
                         $nextPage = $page + 1;
-                        echo '<li class="page-item"><a class="page-link" href="'._WEB_HOST_ROOT_ADMIN.'?module=room'.$queryString.'&page='.$nextPage.'">Next</a></li>';
+                        echo '<li class="page-item"><a class="page-link" href="'._WEB_HOST_ROOT_ADMIN.'?module=contract'.$queryString.'&page='.$nextPage.'">Next</a></li>';
                     }
                 ?>
             </ul>

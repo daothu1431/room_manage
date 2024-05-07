@@ -19,6 +19,7 @@ if(isset($_POST['deleteMultip'])) {
             setFlashData('msg', 'Xóa thông tin khách thuê thành công');
             setFlashData('msg_type', 'suc');
         }
+
         redirect('admin/?module=tenant');
 }
 
@@ -164,7 +165,6 @@ layout('navbar', 'admin', $data);
                         <th>Mặt trước CCCD</th>
                         <th>Mặt sau CCCD</th>
                         <th>Phòng đang ở</th>
-                        <th>Zalo</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -206,9 +206,9 @@ layout('navbar', 'admin', $data);
                         <td><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'" width=70 height=50/>' ?></td>
                         <td><?php echo (isFontIcon($item['anhmatsau']))?$item['anhmatsau']:'<img src="'.$item['anhmatsau'].'" width=70 height=50/>' ?></td>
                         <td><p class="btn btn-info btn-sm" style="color: #fff; font-size: 12px"><?php echo $item['tenphong'] ?></p></td>
-                        <td><a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a></td>
-                                
+
                         <td class="">
+                            <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
                             <a href="<?php echo getLinkAdmin('tenant','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm" ><i class="fa fa-edit"></i> </a>
                             <a href="<?php echo getLinkAdmin('tenant','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
                         </td>                

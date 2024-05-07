@@ -174,7 +174,7 @@ layout('navbar', 'admin', $data);
                         </div>
 
                         <div class="form-group">
-                            <label for="">Thời hạn hợp đồng</label>
+                            <label for="">Thời hạn hợp đồng <span style="color: red">*</span></label>
                             <input type="date" name="ngayra" id="" class="form-control" value="<?php echo old('ngayra', $old); ?>">
                             <?php echo form_error('ngayra', $errors, '<span class="error">', '</span>'); ?>
                         </div>

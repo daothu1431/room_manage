@@ -36,6 +36,10 @@ if(isPost()) {
         $errors['ngaysinh']['required'] = '** Bạn chưa chọn ngày sinh!';
     }
 
+    if(empty(trim($body['room_id']))) {
+        $errors['room_id']['required'] = '** Bạn chưa chọn phòng cho khách này!';
+    }
+
    
    // Kiểm tra mảng error
   if(empty($errors)) {
@@ -191,6 +195,7 @@ layout('navbar', 'admin', $data);
                                     }
                                 ?>
                             </select>
+                            <?php echo form_error('room_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
 

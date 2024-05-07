@@ -21,7 +21,7 @@
               </a>
   
               <!-- Item 3 -->
-              <a href="#" class="link__menu">
+              <a href="<?php echo getLinkAdmin('contract'); ?>" class="link__menu">
                 <div class="menu__item">
                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/contract.png" class="menu__item-image" alt="">
                     <p class="menu__item-title">Quản lý hợp đồng</p>
