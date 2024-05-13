@@ -105,10 +105,6 @@ layout('navbar', 'admin', $data);
 
     <div class="container">
         <hr/>
-        
-        <div id="MessageFlash">
-            <?php getMsg($msg, $msgType);?> 
-        </div>
 
         <div class="box-content">
                 <form action="" method="post" class="row" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">

@@ -67,7 +67,7 @@ autoRemoveTokenLogin();
                   alt=""
                   class="logo__image"
               />
-              <p class="logo__title">LOZIDO</p>
+              <p class="logo__title">Nhà trọ Ngọc Chiến</p>
             </a>
 
             <div class="nav__list">

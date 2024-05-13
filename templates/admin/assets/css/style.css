@@ -177,11 +177,16 @@ th {
 }
 
 .header {
-    background: #15a05c;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #fff;
     box-shadow: 0px 20px 60px 10px rgba(237, 237, 246, 0.1);
     padding: 4px 30px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #000;
+    z-index: 9999;
 }
+
 
 .top-bar {
     display: flex;
@@ -192,7 +197,7 @@ th {
 .logo {
     display: flex;
     align-items: center;
-    gap: 1px;
+    gap: 10px;
 }
 
 .logo__image {
@@ -202,7 +207,7 @@ th {
 }
 
 .logo__title {
-    color: #fff;
+    color: #000;
     font-size: 24px;
     font-weight: 700;
     margin-top: 20px;
@@ -214,12 +219,13 @@ th {
 }
 
 .nav__item {
-    color: #ffffff;
+    color: #000;
     display: flex;
     flex-direction: column;
     -webkit-box-align: center;
     align-items: center;
-    background-color: #30ae71;
+    background-color: #fff;
+    border: 1px solid #000;
     border-radius: 10px;
     margin: 10px 5px;
     font-size: 13px;
@@ -240,6 +246,11 @@ th {
     background-color: #dc3545;
     border-radius: 50%;
 }
+
+.content-header {
+    margin-top: 120px;
+}
+
 
 .image__contract {
     display: flex;
@@ -289,18 +300,17 @@ th {
   
   .modal-content {
     background-color: #fefefe;
-    margin: 5% auto;
+    margin: 8% auto;
     padding: 20px;
     border: 1px solid #888;
     border-radius: 12px;
-    width: 35%;
-    height: 85%;
-    overflow-y: scroll;
+    width: 30%;
+    height: auto;
   }
   
   .close {
     color: #7f7d7d;
-    float: right;
+    float: left;
     font-size: 28px;
     font-weight: bold;
   }
@@ -326,4 +336,236 @@ th {
     color: #fff;
     background-color: #7dc242;
     border-radius: 8px;
+}
+
+.dashboard-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.content-left {
+    padding: 15px 15px;
+    width: 60%;
+    height: auto;
+    background-color: #FFF;
+}
+
+.content-right {
+    padding: 15px 15px;
+    width: 40%;
+    height: auto;
+    background-color: #FFF;
+}
+
+.total-room {
+    padding: 10px 15px 25px;
+    width: 100%;
+    background-color: #28788f;
+    border-radius: 12px;
+    height: 120px;
+    color: #fff;
+}
+
+.content-left-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content-left-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: hsla(0, 0%, 100%, .2);
+    border-radius: 50%;
+}
+
+.total-desc {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.total-count {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.content-left-child {
+    color: #fff;
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.child-one {
+    position: relative;
+    padding: 12px;
+    width: 50%;
+    background: #018dff;
+    border-radius: 14px;
+}
+
+.child-two {
+    position: relative;
+    padding: 12px;
+    width: 50%;
+    background-color: #ff9800;
+    border-radius: 14px
+}
+
+.child-three {
+    position: relative;
+    padding: 12px;
+    width: 50%;
+    background-color: #3ca05c;
+    border-radius: 14px
+}
+
+.child-four {
+    position: relative;
+    padding: 12px;
+    width: 50%;
+    background-color: #e04719;
+    border-radius: 14px
+}
+
+.child-five {
+    width: 100%;
+    padding: 10px;
+    background: #fff4f4;
+    border-radius: 14px;
+    color: red;
+}
+
+.child-six {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    background: #ffc1072e;
+    border-radius: 14px;
+    color: #ff9800 !important;
+}
+
+.child-seven {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    background: #d0ffdf;
+    border-radius: 14px;
+    color: #3ca05c !important;
+}
+
+.dashboard-link {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 120px 15px 15px 10px;
+    background: hsla(0, 0%, 100%, .2);
+    bottom: 10px;
+    right: 10px;
+   
+}
+
+.background-icon {
+    background: hsl(0deg 100% 80% / 20%) !important;
+}
+
+.active {
+    background-color: #f0f0f0; /* Màu nền khi mục menu được kích hoạt */
+    /* Các thuộc tính CSS khác cho mục menu được kích hoạt */
+}
+
+
+/* Service */
+
+.service-left {
+    width: 35%;
+}
+
+.service-left_top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.service-btn {
+    background-color: #15a05c;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.service-btn:hover {
+    scale: 1.1;
+}
+
+.service-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 10px 10px;
+    border-radius: 12px;
+}
+
+.service-item_left {
+    display: flex;
+    gap: 12px;
+}
+
+.service-item_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: #e6e4e4;
+    border-radius: 50%;
+}
+
+.service-item_left p {
+    font-size: 14px;
+}
+
+.service-item_left i {
+    font-size: 14px;
+    color: #7dc242;
+}
+
+.service-item_left h6 {
+    font-weight: bold;
+}
+
+.service-item_right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.service-item_right .edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #eee;
+}
+
+.service-item_right .del {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ee3a4e;
 }
