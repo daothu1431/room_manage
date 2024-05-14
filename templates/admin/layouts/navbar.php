@@ -38,7 +38,7 @@
               </a>
   
                <!-- Item 4 -->
-               <a href="#" class="link__menu">
+               <a href="<?php echo getLinkAdmin('bill'); ?>" class="link__menu">
                 <div class="menu__item">
                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
                     <p class="menu__item-title">Quản lý hóa đơn</p>

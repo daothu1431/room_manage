@@ -12,7 +12,7 @@ layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
 $allRoom = getRaw("SELECT id, tenphong, soluong FROM room ORDER BY tenphong");
-$allTenant = getRaw("SELECT * FROM tenant");
+$allTenant = getRaw("SELECT *, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
 
 // Xử lý thêm hợp đồng
 if(isPost()) {
@@ -111,7 +111,7 @@ layout('navbar', 'admin', $data);
                                     if(!empty($allTenant)) {
                                         foreach($allTenant as $item) {                                            
                                                 ?>
-                                                    <option value="<?php echo $item['id'] ?>" <?php echo (!empty($tenantId) && $tenantId == $item['id'])?'selected':'' ?>><?php echo $item['tenkhach'] ?></option> 
+                                                    <option value="<?php echo $item['id'] ?>" <?php echo (!empty($tenantId) && $tenantId == $item['id'])?'selected':'' ?>><?php echo $item['tenkhach']?> - <?php echo $item['tenphong'] ?></option> 
                                                 <?php                                           
                                         }
                                     }

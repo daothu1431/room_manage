@@ -35,6 +35,46 @@ spanEdit.onclick = function(event) {
   event.stopPropagation(); // Ngăn chặn lan truyền sự kiện
 }
 
+
+function updateTienPhong() {
+  const roomSelect = document.getElementById('room_id');
+  const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+  const giaPhong = selectedOption.getAttribute('data-giaphong');
+  
+  // document.getElementById('tienphong').value = giaPhong;
+
+  // Định dạng số tiền với dấu phân cách hàng nghìn
+  var formattedTienPhong = numberWithCommas(giaPhong);
+
+  // Cập nhật giá trị của trường input tiền phòng
+  document.getElementById('tienphong').value = formattedTienPhong + ' VND';
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+function updateChuky() {
+  const roomSelect = document.getElementById('room_id');
+  const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+  const giaPhong = selectedOption.getAttribute('data-chuky');
+  
+  document.getElementById('chuky').value = giaPhong;
+}
+
+
+
+function updateSoluong() {
+  const roomSelect = document.getElementById('room_id');
+  const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+  const giaPhong = selectedOption.getAttribute('data-soluong');
+  
+  document.getElementById('soluongNguoi').value = giaPhong;
+}
+
+
+
 // window.onclick = function(event) {
 //   if (event.target == modal) {
 //     modal.style.display = "none";

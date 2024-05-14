@@ -73,9 +73,8 @@ a {
     display: flex;
 }
 
-
 table thead tr {
-    background-color: #ebeced;
+    background-color: #f9fafb;
 }
 
 tbody tr {
@@ -89,6 +88,7 @@ tbody tr td {
 
 
 th {
+    text-align: center;
     font-size: 14px;
     font-weight: 500;
 }
@@ -225,7 +225,7 @@ th {
     -webkit-box-align: center;
     align-items: center;
     background-color: #fff;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
     border-radius: 10px;
     margin: 10px 5px;
     font-size: 13px;
@@ -233,8 +233,9 @@ th {
 }
 
 .nav__item:hover {
-    color: #fff;
-    background-color: #56cc95;
+
+    color: #000;
+    background-color: #eee;
 }
 
 .image__room {
@@ -245,6 +246,21 @@ th {
     height: 40px;
     background-color: #dc3545;
     border-radius: 50%;
+}
+
+.image__bill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #ED6004;
+    border-radius: 50%;
+}
+
+.image__bill-img {
+    width: 20px;
+    height: 20px;
 }
 
 .content-header {
@@ -568,4 +584,14 @@ th {
     height: 50px;
     border-radius: 50%;
     background: #ee3a4e;
+}
+
+.water {
+    margin: 20px 0;
+    padding: 20px 20px;
+    width: auto;
+    height: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 1px 1px 8px #ccc;
 }
