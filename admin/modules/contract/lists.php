@@ -20,7 +20,7 @@ if (isGet()) {
         $status = $body['status'];
 
         if($status == 2) {
-            $statusSql = 2;
+            $statusSql = 0;
         } else {
             $statusSql = $status;
         }
@@ -31,7 +31,7 @@ if (isGet()) {
             $operator = 'WHERE';
         }
         
-        $filter .= "$operator trangthaihopdong=$statusSql";
+        $filter .= "$operator contract.trangthaihopdong=$statusSql";
     }
 }
 
@@ -105,14 +105,14 @@ layout('navbar', 'admin', $data);
                 <div class="form-group">
                     <select name="status" id="" class="form-select">
                         <option value="">Chọn trạng thái</option>
-                        <option value="0" <?php echo (!empty($status) && $status==0) ? 'selected':false; ?>>Trong thời hạn</option>
+                        <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Trong thời hạn</option>
                         <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
                     </select>
                 </div>
             </div>
 
             <div class="col">
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
+                    <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
             </div>
             </div>
             <input type="hidden" name="module" value="contract">
@@ -145,7 +145,7 @@ layout('navbar', 'admin', $data);
                         <th>Ngày lập</th>
                         <th>Ngày vào ở</th>
                         <th>Thời hạn hợp đồng</th>
-                        <th>Ký hợp đồng</th>
+                        <th>Trạng thái cọc</th>
                         <th>Tình trạng</th>
                         <th>Thao tác</th>
                     </tr>
@@ -179,16 +179,16 @@ layout('navbar', 'admin', $data);
                         <td><?php echo $item['ngaylaphopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngaylaphopdong'],'d-m-Y'); ?></td> 
                         <td><?php echo $item['ngayvaoo'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngayvaoo'],'d-m-Y'); ?></td> 
                         <td><?php echo $item['thoihanhopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['thoihanhopdong'],'d-m-Y'); ?></td> 
-                        <td><?php echo $item['kyhopdong'] == 0 ? '<i>Khách chưa ký</i>' : '<i>Khách đã ký</i>' ?></td>
+                        <td><?php echo $item['tinhtrangcoc'] == 0 ? '<span class="btn-kyhopdong-err">Chưa thu tiền</span>' : '<span class="btn-kyhopdong-suc">Đã thu tiền</span>' ?></td>
                         <td>
                             <?php
 
                                 if($item['trangthaihopdong'] == 0) {
-                                    ?> <span class="btn-kyhopdong-suc">Trong thời hạn</span> <?php
+                                    ?> <span class="btn-kyhopdong-err">Đã hết hạn</span> <?php
                                 }
 
-                                if($item['trangthaihopdong'] == 2) {
-                                    ?> <span class="btn-kyhopdong-err">Đã hết hạn</span> <?php
+                                if($item['trangthaihopdong'] == 1) {
+                                    ?> <span class="btn-kyhopdong-suc">Trong thời hạn</span> <?php
                                 }
                                 
                             ?>

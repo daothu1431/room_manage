@@ -40,11 +40,13 @@ function updateTienPhong() {
   const roomSelect = document.getElementById('room_id');
   const selectedOption = roomSelect.options[roomSelect.selectedIndex];
   const giaPhong = selectedOption.getAttribute('data-giaphong');
+
+  const chuky = selectedOption.getAttribute('data-chuky');
   
   // document.getElementById('tienphong').value = giaPhong;
 
   // Định dạng số tiền với dấu phân cách hàng nghìn
-  var formattedTienPhong = numberWithCommas(giaPhong);
+  var formattedTienPhong = numberWithCommas(giaPhong * chuky);
 
   // Cập nhật giá trị của trường input tiền phòng
   document.getElementById('tienphong').value = formattedTienPhong + ' VND';
@@ -61,6 +63,7 @@ function updateChuky() {
   const giaPhong = selectedOption.getAttribute('data-chuky');
   
   document.getElementById('chuky').value = giaPhong;
+  roomSelect.addEventListener
 }
 
 

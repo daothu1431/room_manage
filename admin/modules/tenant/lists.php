@@ -132,7 +132,7 @@ layout('navbar', 'admin', $data);
             </div>
 
             <div class="col">
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
+                    <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
             </div>
             </div>
             <input type="hidden" name="module" value="tenant">
@@ -147,6 +147,12 @@ layout('navbar', 'admin', $data);
             <button type="submit" name="deleteMultip" value="Delete" onclick="return confirm('Bạn có chắn chắn muốn xóa không ?')" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa</button>
             <a href="<?php echo getLinkAdmin('tenant', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
             <a href="<?php echo getLinkAdmin('tenant', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
+            
+            <!-- Modal để preview ảnh -->
+            <div id="myModal" class="modal">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="img01">
+            </div>
 
             <table class="table table-bordered mt-3" id="dataTable">
                 <thead>
@@ -272,5 +278,5 @@ layout('footer', 'admin');
         for (let index = 0; index < checkbox.length; index++) {
             checkbox[index].checked = isChecked
         }
-    }
+    }        
 </script>

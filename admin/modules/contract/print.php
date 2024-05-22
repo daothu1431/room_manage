@@ -1,7 +1,6 @@
 <?php
 // Include thư viện TCPDF
 require_once('../TCPDF-main/tcpdf.php');
-
 $body = getBody();
 $id = $_GET['id'];
 
@@ -37,7 +36,7 @@ $pdf->AddPage();
 // Thiết lập thông tin tài liệu
 $pdf->SetCreator('Creator');
 $pdf->SetAuthor('Author');
-$pdf->SetTitle('Title');
+$pdf->SetTitle('Hợp đồng thuê trọ');
 $pdf->SetSubject('Subject');
 $pdf->SetKeywords('Keywords');
 

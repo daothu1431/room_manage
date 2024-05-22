@@ -128,7 +128,7 @@ layout('navbar', 'admin', $data);
             </div>
 
             <div class="col">
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
+                    <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
             </div>
             </div>
             <input type="hidden" name="module" value="room">

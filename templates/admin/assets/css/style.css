@@ -171,6 +171,14 @@ th {
     gap: 20px;
 }
 
+.min {
+    font-weight: bold;
+    margin-left: 10px;
+    padding: 10px 10px;
+    background-image: linear-gradient(to right, #7dc242, #3b9d46);
+    border: none;
+}
+
 .minn {
     background-image: linear-gradient(to right, #7dc242, #3b9d46);
     border: none;
@@ -252,8 +260,8 @@ th {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     background-color: #ED6004;
     border-radius: 50%;
 }
@@ -343,6 +351,14 @@ th {
     padding: 6px 8px;
     color: #fff;
     background-color: #dc3545;
+    border-radius: 8px;
+}
+
+.btn-kyhopdong-second {
+    font-size: 10px;
+    padding: 6px 8px;
+    color: #fff;
+    background-color: #000;
     border-radius: 8px;
 }
 
@@ -499,8 +515,47 @@ th {
 
 /* Service */
 
+.box-service {
+    display: flex;
+    gap: 30px;
+}
+
 .service-left {
     width: 35%;
+}
+
+.collect-left {
+    width: 100%;
+}
+
+.collect-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 20px 20px;
+    border-radius: 12px;
+    width: 30%;
+}
+
+.collect-item:hover {
+    box-shadow: 1px 1px 8px #15a05c;
+}
+
+.collect-left_top {
+    justify-content: space-between;
+    display: flex;
+}
+
+.collect-list {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.service-right {
+    width: 60%;
+    height: auto;
 }
 
 .service-left_top {
@@ -587,11 +642,71 @@ th {
 }
 
 .water {
-    margin: 20px 0;
+    margin-top: 20px;
+    margin-bottom: 30px;
     padding: 20px 20px;
     width: auto;
     height: auto;
     background: #fff;
     border-radius: 10px;
     box-shadow: 1px 1px 8px #ccc;
+}
+
+.right-inner {
+    display: flex;
+    justify-content: space-between;
+}
+
+.small {
+    width: 30px;
+    height: 30px;
+}
+
+.report-receipt-spend {
+    display: flex;
+    gap: 20px;
+}
+
+.report-receipt {
+    background: #4caf5014;
+    border-radius: 10px;
+    width: 250px;
+    padding: 10px 10px;
+}
+
+
+.report-spend {
+    background: #4caf5014;
+    border-radius: 10px;
+    width: 250px;
+    padding: 10px 10px;
+}
+
+.report-sumary {
+    color: #198754;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #4caf5014;
+    border-radius: 10px;
+    width: 250px;
+    padding-top: 20px;
+}
+
+.report-ts {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.report-ts p { 
+    font-size: 20px;
+    font-weight: bold;
+    color: #198754;
+}
+
+.sumary-title {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 22px;
 }

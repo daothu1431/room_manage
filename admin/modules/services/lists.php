@@ -10,19 +10,16 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
-
-$allService = getRaw("SELECT * FROM services");
-
+$currentMonthYear = date('Y-m');
 
 // Xử lý lọc dữ liệu
 $filter = '';
 if (isGet()) {
     $body = getBody('get');
-    
 
     // Xử lý lọc theo từ khóa
-    if(!empty($body['keyword'])) {
-        $keyword = $body['keyword'];
+    if(!empty($body['datebill'])) {
+        $datebill = $body['datebill'];
         
         if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
             $operator = 'AND';
@@ -30,29 +27,14 @@ if (isGet()) {
             $operator = 'WHERE';
         }
 
-        $filter .= " $operator tenphong LIKE '%$keyword%'";
+        $filter .= " $operator bill.create_at LIKE '%$datebill%'";
 
-    }
-
-    //Xử lý lọc Status
-    if(!empty($body['status'])) {
-        $status = $body['status'];
-
-        if($status == 2) {
-            $statusSql = 0;
-        } else {
-            $statusSql = $status;
-        }
-
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-        
-        $filter .= "$operator trangthai=$statusSql";
     }
 }
+
+$allService = getRaw("SELECT * FROM services");
+$listAllBill = getRaw("SELECT *, bill.id, room.tenphong, tenant.zalo FROM bill 
+INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter ORDER BY bill.create_at DESC ");
 
 // Xử lý thêm người dùng
 if(isPost()) {
@@ -114,6 +96,8 @@ layout('navbar', 'admin', $data);
     <div id="MessageFlash">          
         <?php getMsg($msg, $msgType);?>          
     </div>
+
+
     <!-- Them -->
     <div id="myModal" class="modal">
         <div class="modal-content">
@@ -157,50 +141,7 @@ layout('navbar', 'admin', $data);
         </div>
     </div>
 
-    <!-- Sua -->
-    <div id="myModalEdit" class="modal">
-        <div class="modal-content">
-            <span class="closeEdit">&times;</span>
-            <h4 style="margin: 20px 0">Cập nhật dịch vụ</h4>
-            <hr />
-            <form action="" method="post" class="row" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">Tên dịch vụ <span style="color: red">*</span></label>
-                        <input type="text" placeholder="Tên dịch vụ" name="tendichvu" id="" class="form-control" value="<?php echo old('tendichvu', $old); ?>">
-                        <?php echo form_error('tendichvu', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="">Đơn vị tính <span style="color: red">*</span></label>
-                        <select name="donvitinh" id="" class="form-select">
-                            <option value="">Chọn đơn vị</option>
-                            <option value="KWh">KWh</option>
-                            <option value="khoi">Khối</option>
-                            <option value="nguoi">Người</option>
-                            <option value="thang">Tháng</option>
-                        </select>
-                        <?php echo form_error('donvitinh', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="">Giá dịch vụ <span style="color: red">*</span></label>
-                        <input type="text" placeholder="Giá dịch vụ" name="giadichvu" id="" class="form-control" value="<?php echo old('giadichvu', $old); ?>">
-                        <?php echo form_error('giadichvu', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
-                </div>
-                <div class="form-group">                    
-                    <div class="btn-row">
-                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Thêm dịch vụ</button>
-                        <a style="margin-left: 20px " href="<?php echo getLinkAdmin('services') ?>" class="btn btn-success"><i class="fa fa-forward"></i></a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="box-content">
+    <div class="box-content box-service">
         <div class="service-left">
             <div class="service-left_top">
                 <div>
@@ -244,6 +185,94 @@ layout('navbar', 'admin', $data);
                 
              ?>
             
+        </div>
+
+        <div class="service-right">
+                <div class="right-inner">
+                    <div class="inner-left">
+                        <h3>Khách thuê sử dụng trong tháng</h3>
+                        <i>Thống kê mỗi tháng khách thuê sử dụng</i>
+                    </div>
+
+                    <div class="inner-right">
+                        <!-- Tìm kiếm -->
+                        <form action="" method="get">
+                            <div class="row">
+                                <div class="col-8">
+                                    <input style="height: 50px" type="month" class="form-control" name="datebill" id="" value="<?php echo (!empty($datebill))? $datebill:$currentMonthYear; ?>">
+                                </div>
+
+                                <div class="col">
+                                        <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
+                                </div>   
+                            </div>
+                            <input type="hidden" name="module" value="services">
+                        </form>
+                    </div>
+                </div>
+
+                
+
+                <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th width="3%" rowspan="2"></th>
+                        <th rowspan="2">Tên phòng</th>
+                        <th colspan="3">Tiền điện (1.700đ)</th>
+                        <th colspan="3">Tiền nước (20.000đ)</th>
+                        <th colspan="2">Tiền rác (10.000đ)</th>
+                        <th colspan="2">Tiền Wifi (50.000đ)</th>
+                    </tr>
+                    <tr>
+                        <th>Số cũ</th>
+                        <th>Số mới</th>
+                        <th>Thành tiền</th>
+                        <th>Số cũ</th>
+                        <th>Số mới</th>
+                        <th>Thành tiền</th>
+                        <th>Người</th>
+                        <th>Thành tiền</th>
+                        <th>Tháng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody id="roomData">
+        
+                    <?php
+                        if(!empty($listAllBill)):
+                            $count = 0; // Hiển thi số thứ tự
+                            foreach($listAllBill as $item):
+                                $count ++;
+        
+                    ?>
+                     <tr>
+                        <td>
+                            <div class="image__bill">
+                                <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/bill-icon.svg" class="image__bill-img" alt="">
+                            </div>
+                        </td>
+                        <td><?php echo $item['tenphong']; ?></td>
+                        <td><?php echo $item['sodiencu']; ?></td>
+                        <td><?php echo $item['sodienmoi']; ?></td>
+                        <td style="color: #13ae38"><b><?php echo number_format($item['tiendien'], 0, ',', '.') ?> đ</b></td>
+                        <td><?php echo $item['sonuoccu']; ?></td>
+                        <td><?php echo $item['sonuocmoi']; ?></td>
+                        <td style="color: #13ae38"><b><?php echo number_format($item['tiennuoc'], 0, ',', '.') ?> đ</b></td>
+                        <td><?php echo $item['songuoi']; ?></td>
+                        <td style="color: #13ae38"><b><?php echo number_format($item['tienrac'], 0, ',', '.') ?> đ</b></td>
+                        <td><?php echo $item['chuky']; ?></td>
+                        <td style="color: #13ae38"><b><?php echo number_format($item['tienmang'], 0, ',', '.') ?> đ</b></td>
+                    </tr>                
+                         
+                    <?php endforeach; else: ?>
+                        <tr>
+                            <td colspan="19">
+                                <div class="alert alert-danger text-center">Không có dữ liệu dịch vụ</div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     <div>
 </div>

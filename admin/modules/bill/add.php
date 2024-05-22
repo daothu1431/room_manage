@@ -26,14 +26,13 @@ if(isPost()) {
     // Validate form
     $body = getBody(); // lấy tất cả dữ liệu trong form
     $errors = [];  // mảng lưu trữ các lỗi
-    
-    //Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
-   
+
    // Kiểm tra mảng error
   if(empty($errors)) {
     // không có lỗi nào
     $dataInsert = [
         'room_id' => $body['room_id'],
+        'mahoadon' => generateInvoiceCode(),
         'tenant_id' => $body['tenant_id'],
         'chuky' => $body['chuky'],
         'tienphong' => $body['tienphong'],
@@ -48,6 +47,7 @@ if(isPost()) {
         'tienmang' => $body['tienmang'],
         'nocu' => $body['nocu'],
         'tongtien' => $body['tongtien'],
+        'create_at' => $body['create_at'],
     ];
 
     $insertStatus = insert('bill', $dataInsert);
@@ -93,7 +93,7 @@ layout('navbar', 'admin', $data);
                         <div class="col-5">
                             <div class="form-group">
                                 <label for="">Chọn phòng lập hóa đơn <span style="color: red">*</span></label>
-                                <select name="room_id" id="room_id" class="form-select" onchange="updateTienPhong(); updateChuky(); updateSoluong()">
+                                <select required name="room_id" id="room_id" class="form-select" onchange="updateTienPhong(); updateChuky(); updateSoluong()">
                                     <option value="">Chọn phòng</option>
                                     <?php
                                         if(!empty($allRoom)) {
@@ -112,7 +112,7 @@ layout('navbar', 'admin', $data);
                         <div class="col-5">
                             <div class="form-group">
                                 <label for="">Người đại diện <span style="color: red">*</span></label>
-                                <select name="tenant_id" id="" class="form-select">
+                                <select required name="tenant_id" id="" class="form-select">
                                     <option value="">Chọn người đại diện</option>
                                     <?php
                                         if(!empty($allTenant)) {
@@ -164,7 +164,7 @@ layout('navbar', 'admin', $data);
 
                             <div class="form-group">
                                 <label for="tiennuoc">Tiền điện (4000đ/1KWh)</label>
-                                <input type="text" class="form-control" id="tiendien" name="tiendien" >
+                                <input type="text" class="form-control" id="tiendien"  name="tiendien" >
                              </div>
                         </div>
                     </div>
@@ -196,7 +196,7 @@ layout('navbar', 'admin', $data);
                             </div>
 
                             <div class="form-group">
-                                <label for="tienrac">Tiền rác</label>
+                                <label for="tienrac">Tiền rác (10.000đ/1người)</label>
                                 <input type="text" class="form-control" id="tienrac" name="tienrac" >
                              </div>
                         </div>
@@ -205,7 +205,7 @@ layout('navbar', 'admin', $data);
                     <div class="col-3">
                         <div class="water">
                             <div class="form-group">
-                                <label for="tienmang">Tiền Wifi</label>
+                                <label for="tienmang">Tiền Wifi (100.000đ/1tháng)</label>
                                 <input type="text" class="form-control" id="tienmang" name="tienmang" >
                              </div>
                         </div>
@@ -220,11 +220,20 @@ layout('navbar', 'admin', $data);
                 </div>
                 
                 <!-- Hàng 4 -->
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="tongtien">Tổng tiền</label>
-                        <input type="text" class="form-control" id="tongtien" name="tongtien" >
-                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="tongtien">Tổng tiền</label>
+                            <input type="text" class="form-control" id="tongtien" name="tongtien" >
+                        </div>
+                    </div>
+
+                    <div class="col-5">
+                        <div class="form-group">
+                            <label for="create_at">Ngày lập hóa đơn</label>
+                            <input type="date" class="form-control" id="create_at" required name="create_at" >
+                        </div>
+                    </div>
 
                 </div>
                     <div class="from-group" style="margin-top: 20px">                    
@@ -275,8 +284,9 @@ layout('footer', 'admin');
     }
 
     function calculateTienRac() {
+        const chuky = parseFloat(document.getElementById('chuky').value) || 0;
         const soluongNguoi = parseFloat(document.getElementById('soluongNguoi').value) || 0;
-        const tienrac = soluongNguoi * dongiaRac;
+        const tienrac = soluongNguoi * dongiaRac * chuky;
         const formattedTienRac = numberWithCommas(tienrac);
         document.getElementById('tienrac').value = formattedTienRac + ' đ';
         calculateTotal();

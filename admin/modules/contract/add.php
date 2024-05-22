@@ -12,7 +12,8 @@ layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
 $allRoom = getRaw("SELECT id, tenphong, soluong FROM room ORDER BY tenphong");
-$allTenant = getRaw("SELECT *, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
+// $allTenant = getRaw("SELECT *, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
+$allTenant = getRaw("SELECT tenant.id, tenant.tenkhach, room.tenphong FROM tenant INNER JOIN room ON room.id = tenant.room_id ORDER BY tenphong");
 
 // Xử lý thêm hợp đồng
 if(isPost()) {
@@ -40,7 +41,7 @@ if(isPost()) {
         'room_id' => $body['room_id'],
         'tenant_id' => $body['tenant_id'],
         'soluongthanhvien' => $body['soluongthanhvien'],
-        'kyhopdong' => $body['kyhopdong'],
+        'tinhtrangcoc' => $body['tinhtrangcoc'],
         'ngaylaphopdong' => $body['ngaylaphopdong'],
         'ngayvao' => $body['ngayvao'],
         'ngayra' => $body['ngayra'],
@@ -111,7 +112,7 @@ layout('navbar', 'admin', $data);
                                     if(!empty($allTenant)) {
                                         foreach($allTenant as $item) {                                            
                                                 ?>
-                                                    <option value="<?php echo $item['id'] ?>" <?php echo (!empty($tenantId) && $tenantId == $item['id'])?'selected':'' ?>><?php echo $item['tenkhach']?> - <?php echo $item['tenphong'] ?></option> 
+                                                    <option value="<?php echo $item['id'] ?>" <?php echo (!empty($tenantId) && $tenantId == $item['id'])?'selected':'' ?>><?php echo $item['tenkhach']?> - <?php echo $item['tenphong']?></option> 
                                                 <?php                                           
                                         }
                                     }
@@ -148,11 +149,11 @@ layout('navbar', 'admin', $data);
                         </div>
 
                         <div class="form-group">
-                            <label for="">Tình trạng hợp đồng</label>
-                            <select name="kyhopdong" class="form-select">
+                            <label for="">Tình trạng cọc</label>
+                            <select name="tinhtrangcoc" class="form-select">
                                 <option value="">Chọn trạng thái</option>
-                                <option value="0" >Khách chưa ký</option>
-                                <option value="1" >Khách đã ký</option>
+                                <option value="0" >Chưa thu tiền</option>
+                                <option value="1" >Đã thu tiền</option>
                             </select>
                         </div>
                     

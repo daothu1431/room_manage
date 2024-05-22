@@ -32,7 +32,7 @@
               <!-- Item 4 -->
               <a href="<?php echo getLinkAdmin('services'); ?>" class="link__menu">
                 <div class="menu__item">
-                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
+                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/client.png" class="menu__item-image" alt="">
                     <p class="menu__item-title">Quản lý dịch vụ</p>
                 </div>
               </a>
@@ -46,9 +46,9 @@
               </a>
 
               <!-- Item 4 -->
-              <a href="#" class="link__menu">
+              <a href="<?php echo getLinkAdmin('sumary'); ?>" class="link__menu">
                 <div class="menu__item">
-                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
+                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/room.png" class="menu__item-image" alt="">
                     <p class="menu__item-title">Thu/Chi - Tổng kết</p>
                 </div>
               </a>
@@ -57,7 +57,7 @@
               <a href="#" class="link__menu">
                 <div class="menu__item">
                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
-                    <p class="menu__item-title">Báo cáo - thống kê</p>
+                    <p class="menu__item-title">Tra cứu hóa đơn</p>
                 </div>
               </a>
           </div>
