@@ -7,10 +7,6 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
   $userDetail = getUserInfo($userId); // Lấy thông tin người dùng
 }
 
-saveActivity();
-
-autoRemoveTokenLogin();
-
 
 ?>
 <!DOCTYPE html>

@@ -142,11 +142,11 @@ layout('navbar', 'admin', $data);
                                 <div class="service-item_right">
                                     <div class="edit">
 
-                                        <a href="<?php echo getLinkAdmin('services','edit',['id' => $item['id']]); ?>"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-edit.svg" alt=""></a>
+                                        <a href="<?php echo getLinkAdmin('collect','edit',['id' => $item['id']]); ?>"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-edit.svg" alt=""></a>
                                     
                                     </div>
                                     <div class="del">
-                                        <a href="<?php echo getLinkAdmin('services','delete',['id' => $item['id']]); ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ không ?')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-delete.svg" alt=""></a>
+                                        <a href="<?php echo getLinkAdmin('collect','delete',['id' => $item['id']]); ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ không ?')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-delete.svg" alt=""></a>
                                     </div>
                                 </div>
                             </div>

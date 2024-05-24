@@ -115,7 +115,6 @@ layout('navbar', 'admin', $data);
                         <p class="total-desc">Lợi nhuận</p>
                     </div>
                     <p class="total-count">12</p>
-                    <a href=""><div class="dashboard-link"></div></a>
                 </div>
                 
         </div>

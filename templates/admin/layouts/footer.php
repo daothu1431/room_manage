@@ -47,6 +47,9 @@
 <!-- AdminLTE for demo purposes -->
 <script src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/js/demo.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 
 <?php
   $body = getBody();

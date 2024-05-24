@@ -248,31 +248,6 @@ function isLoginStudent(){
     return $checkLogin;
 }
 
-//Tự động xoá token login đếu đăng xuất
-function autoRemoveTokenLogin(){
-    $allUsers = getRaw("SELECT * FROM users WHERE status=1");
-
-    if (!empty($allUsers)){
-        foreach ($allUsers as $user){
-            $now = date('Y-m-d H:i:s');
-
-            $before = $user['last_activity'];
-
-            $diff = strtotime($now)-strtotime($before);
-            $diff = floor($diff/60);
-
-            if ($diff>=1){
-                delete('login_token', "user_id=".$user['id']);
-            }
-        }
-    }
-}
-
-//Lưu lại thời gian cuối cùng hoạt động
-function saveActivity(){
-    $user_id = isLogin()['user_id'];
-    update('users', ['last_activity'=>date('Y-m-d H:i:s')], "id=$user_id");
-}
 
 //Lấy thông tin user
 function getUserInfo($user_id){

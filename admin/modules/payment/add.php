@@ -5,14 +5,14 @@ die('Access denied...');
 
 
 $data = [
-    'pageTitle' => 'Thêm phiếu thu mới'
+    'pageTitle' => 'Thêm phiếu chi mới'
 ];
 
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
-$allCollect = getRaw("SELECT * FROM category_collect");
-$allRoom = getRaw("SELECT * FROM room");
+$allPayment = getRaw("SELECT * FROM category_spend");
+$allRoom = getRaw("SELECT * FROM room ORDER BY tenphong");
 
 // Xử lý thêm hợp đồng
 if(isPost()) {
@@ -29,24 +29,23 @@ if(isPost()) {
   if(empty($errors)) {
     // không có lỗi nào
     $dataInsert = [
-        'danhmucthu_id' => $body['danhmucthu_id'],
+        'danhmucchi_id' => $body['danhmucchi_id'],
         'room_id' => $body['room_id'],
         'sotien' => $body['sotien'],
         'ghichu' => $body['ghichu'],
-        'ngaythu' => $body['ngaythu'],
+        'ngaychi' => $body['ngaychi'],
         'phuongthuc' => $body['phuongthuc'],
-        // 'create_at' => date('Y-m-d H:i:s'),
     ];
 
-    $insertStatus = insert('receipt', $dataInsert);
+    $insertStatus = insert('payment', $dataInsert);
     if ($insertStatus) {
-        setFlashData('msg', 'Thêm thông tin phiếu thu mới thành công');
+        setFlashData('msg', 'Thêm thông tin phiếu chi mới thành công');
         setFlashData('msg_type', 'suc');
-        redirect('admin/?module=receipt');
+        redirect('admin/?module=payment');
     }else {
     setFlashData('msg', 'Hệ thống đang gặp sự cố, vui lòng thử lại sau');
     setFlashData('msg_type', 'err');
-    redirect('admin/?module=receipt&action=add'); 
+    redirect('admin/?module=payment&action=add'); 
     }
 
   }else {
@@ -55,7 +54,7 @@ if(isPost()) {
     setFlashData('msg_type', 'err');
     setFlashData('errors', $errors);
     setFlashData('old', $body);  // giữ lại các trường dữ liệu hợp lê khi nhập vào
-    redirect('admin/?module=receipt&action=add'); 
+    redirect('admin/?module=payment&action=add'); 
   }
 
 }
@@ -78,12 +77,12 @@ layout('navbar', 'admin', $data);
                     <div class="col-5">
                         
                         <div class="form-group">
-                            <label for="">Danh mục thu <span style="color: red">*</span></label>
-                            <select name="danhmucthu_id" id="" class="form-select">
+                            <label for="">Danh mục chi <span style="color: red">*</span></label>
+                            <select name="danhmucchi_id" id="" class="form-select">
                                 <option value="">Chọn danh mục</option>
                                 <?php
-                                    if(!empty($allCollect)) {
-                                        foreach($allCollect as $item) {                                            
+                                    if(!empty($allPayment)) {
+                                        foreach($allPayment as $item) {                                            
                                                 ?>
                                                     <option value="<?php echo $item['id'] ?>" <?php echo (!empty($roomId) && $roomId == $item['id'])?'selected':'' ?>><?php echo $item['tendanhmuc'] ?></option> 
                                                 <?php                                           
@@ -94,7 +93,7 @@ layout('navbar', 'admin', $data);
                         </div>
 
                         <div class="form-group">
-                            <label for="">Chọn phòng lập phiếu thu <span style="color: red">*</span></label>
+                            <label for="">Chọn phòng lập phiếu chi <span style="color: red">*</span></label>
                             <select name="room_id" id="" class="form-select">
                                 <option value="">Chọn phòng</option>
                                 <?php
@@ -111,14 +110,14 @@ layout('navbar', 'admin', $data);
                         </div>
 
                         <div class="form-group">
-                            <label for="">Nội dung thanh toán <span style="color: red">*</span></label>
+                            <label for="">Ghi chú <span style="color: red">*</span></label>
                             <textarea  rows="5" name="ghichu" id="" class="form-control" value=""></textarea>
                             <?php echo form_error('ghichu', $errors, '<span class="error">', '</span>'); ?>
                         </div>
                     </div>
 
                     <div class="col-5">
-
+                               
                         <div class="form-group">
                             <label for="">Số tiền <span style="color: red">*</span></label>
                             <input type="text" placeholder="Nhập số tiền thu" name="sotien" id="" class="form-control" value="<?php echo old('sotien', $old); ?>">
@@ -126,9 +125,9 @@ layout('navbar', 'admin', $data);
                         </div>
         
                         <div class="form-group">
-                            <label for="">Ngày thu <span style="color: red">*</span></label>
-                            <input type="date" name="ngaythu" id="" class="form-control" value="<?php echo old('ngaythu', $old); ?>">
-                            <?php echo form_error('ngaythu', $errors, '<span class="error">', '</span>'); ?>
+                            <label for="">Ngày chi <span style="color: red">*</span></label>
+                            <input type="date" name="ngaychi" id="" class="form-control" value="<?php echo old('ngaychi', $old); ?>">
+                            <?php echo form_error('ngaychi', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
                         <div class="form-group">
@@ -143,8 +142,8 @@ layout('navbar', 'admin', $data);
                     </div>                  
                     <div class="from-group">                    
                             <div class="btn-row">
-                                <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Thêm phiếu thu</button>
-                                <a style="margin-left: 20px " href="<?php echo getLinkAdmin('receipt') ?>" class="btn btn-success"><i class="fa fa-forward"></i></a>
+                                <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Thêm phiếu chi</button>
+                                <a style="margin-left: 20px " href="<?php echo getLinkAdmin('payment') ?>" class="btn btn-success"><i class="fa fa-forward"></i></a>
                             </div>
                     </div>
                 </form>

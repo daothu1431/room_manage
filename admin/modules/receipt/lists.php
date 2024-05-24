@@ -156,7 +156,7 @@ layout('navbar', 'admin', $data);
                             </div>
                         </td>
                         <td><?php echo $count; ?></td>
-                        <td style="color: red"><b><?php echo $item['tendanhmuc']; ?></b></td>
+                        <td style="color: green"><b><?php echo $item['tendanhmuc']; ?></b></td>
                         <td><span style="background: #15A05C; color: #fff; padding: 2px 4px; border-radius: 5px; font-size: 12px">Khoản thu</span></td>
                         <td><?php echo $item['tenphong'] ?></td>
                         <td><b><?php echo number_format($item['sotien'], 0, ',', '.') ?> đ</b></td>

@@ -1,6 +1,6 @@
 
     <!-- Main content -->
-    <div class="container">
+    <div class="">
       <section class="content">
         <div class="container-fluid">
           <div class="menu__list">
@@ -54,10 +54,18 @@
               </a>
 
               <!-- Item 4 -->
-              <a href="#" class="link__menu">
+              <a href="<?php echo getLinkAdmin('users'); ?>" class="link__menu">
                 <div class="menu__item">
                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
-                    <p class="menu__item-title">Tra cứu hóa đơn</p>
+                    <p class="menu__item-title">Người dùng hệ thống</p>
+                </div>
+              </a>
+
+              <!-- Item 4 -->
+              <a href="<?php echo getLinkAdmin('groups'); ?>" class="link__menu">
+                <div class="menu__item">
+                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
+                    <p class="menu__item-title">Nhóm người dùng</p>
                 </div>
               </a>
           </div>
