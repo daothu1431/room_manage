@@ -42,7 +42,7 @@ if (isPost()){
                     //Lưu loginToken vào session
                     setSession('loginToken', $tokenLogin);
                     //Chuyển hướng qua trang quản lý users
-                    redirect('admin');
+                    redirect('admin/?module=');
                 }
 
             }else{

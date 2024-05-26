@@ -3,6 +3,18 @@
 if(!defined('_INCODE'))
 die('Access denied...');
 
+// Ngăn chặn quyền truy cập
+$userId = isLogin()['user_id'];
+$userDetail = getUserInfo($userId); 
+
+$grouId = $userDetail['group_id'];
+
+if($grouId != 7) {
+    setFlashData('msg', 'Bạn không được truy cập vào trang này');
+    setFlashData('msg_type', 'err');
+    redirect('admin/?module=');
+}
+
 $data = [
     'pageTitle' => 'Quản lý hợp đồng thuê trọ'
 ];
@@ -76,9 +88,6 @@ if(isset($_POST['deleteMultip'])) {
         }
         redirect('admin/?module=contract');
 }
-
-
-
 
 $msg =getFlashData('msg');
 $msgType = getFlashData('msg_type');
@@ -263,3 +272,4 @@ layout('footer', 'admin');
         }
     }
 </script>
+

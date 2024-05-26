@@ -3,24 +3,17 @@
 if(!defined('_INCODE'))
 die('Access denied...');
 
-// Ngăn chặn quyền truy cập
+
 $userId = isLogin()['user_id'];
 $userDetail = getUserInfo($userId); 
-
-$grouId = $userDetail['group_id'];
-
-if($grouId != 7) {
-    setFlashData('msg', 'Bạn không được truy cập vào trang này');
-    setFlashData('msg_type', 'err');
-    redirect('admin/?module=');
-}
+$roomId  = $userDetail['room_id'];
 
 $data = [
-    'pageTitle' => 'Danh sách hóa đơn'
+    'pageTitle' => 'Lịch sử hóa đơn'
 ];
 
-layout('header', 'admin', $data);
-layout('breadcrumb', 'admin', $data);
+layout('header-tenant', 'admin', $data);
+layout('sidebar', 'admin', $data);
 
 
 $allService = getRaw("SELECT * FROM services");
@@ -28,56 +21,6 @@ $currentMonthYear = date('Y-m');
 
 // Xử lý lọc dữ liệu
 $filter = '';
-if (isGet()) {
-    $body = getBody('get');
-    
-    // Xử lý lọc theo từ khóa
-    if(!empty($body['keyword'])) {
-        $keyword = $body['keyword'];
-        
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-
-        $filter .= " $operator mahoadon LIKE '%$keyword%'";
-
-    }
-
-    // Xử lý lọc theo từ khóa
-    if(!empty($body['datebill'])) {
-        $datebill = $body['datebill'];
-        
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-
-        $filter .= " $operator create_at LIKE '%$datebill%'";
-
-    }
-
-    //Xử lý lọc Status
-    if(!empty($body['status'])) {
-        $status = $body['status'];
-
-        if($status == 2) {
-            $statusSql = 0;
-        } else {
-            $statusSql = $status;
-        }
-
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-        
-        $filter .= "$operator trangthaihoadon=$statusSql";
-    }
-}
 
 /// Xử lý phân trang
 $allBill = getRows("SELECT id FROM bill $filter");
@@ -95,7 +38,7 @@ if(!empty(getBody()['page'])) {
 }
 $offset = ($page - 1) * $perPage;
 $listAllBill = getRaw("SELECT *, bill.id, room.tenphong, tenant.zalo FROM bill 
-INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter ORDER BY bill.create_at DESC LIMIT $offset, $perPage");
+INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id WHERE bill.room_id = $roomId $filter ORDER BY bill.create_at DESC LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -113,10 +56,6 @@ $errors = getFlashData('errors');
 $old = getFlashData('old');
 ?>
 
-<?php
-layout('navbar', 'admin', $data);
-?>
-
 <div class="container-fluid">
 
         <div id="MessageFlash">          
@@ -125,43 +64,10 @@ layout('navbar', 'admin', $data);
 
     <!-- Tìm kiếm -->
     <div class="box-content">
-            <!-- Tìm kiếm , Lọc dưz liệu -->
-        <form action="" method="get">
-            <div class="row">
-                <div class="col-3">
-                    <div class="form-group">
-                        <select name="status" id="" class="form-select">
-                            <option value="0">Chọn trạng thái</option>
-                            <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Đã thu</option>
-                            <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Chưa thu</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <input style="height: 50px" type="search" name="keyword" class="form-control" placeholder="Nhập mã hóa đơn cần tìm" value="<?php echo (!empty($keyword))? $keyword:false; ?>" >
-                </div>
-
-                <div class="col-3">
-                    <input style="height: 50px" type="month" class="form-control" name="datebill" id="" value="<?php echo (!empty($datebill))? $datebill:$currentMonthYear; ?>">
-                </div>
-
-                <div class="col">
-                        <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
-                </div>   
-            </div>
-            <input type="hidden" name="module" value="bill">
-        </form>
-
         <form action="" method="POST" class="mt-3">
     <div>
-  
+    <h3>Lịch sử hóa đơn tiền nhà</h3>
 </div>
-            <a href="<?php echo getLinkAdmin('bill', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
-            <a href="<?php echo getLinkAdmin('bill', 'lists'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
-            <a href="<?php echo getLinkAdmin('bill', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
-            <a href="<?php echo getLinkAdmin('bill', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
-
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
@@ -176,7 +82,6 @@ layout('navbar', 'admin', $data);
                         <th rowspan="2">Tổng cộng</th>
                         <th rowspan="2">Ngày lập</th>
                         <th rowspan="2">Trạng thái</th>
-                        <th rowspan="2">Thao tác</th>
                     </tr>
                     <tr>
                         <th>Số tháng</th>
@@ -228,13 +133,6 @@ layout('navbar', 'admin', $data);
                             <?php 
                                  echo $item['trangthaihoadon'] == 1 ? '<span class="btn-kyhopdong-suc">Đã thu</span>':'<span class="btn-kyhopdong-err">Chưa thu</span>';
                             ?>
-                        </td>
-                        <td>
-                            <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" class="small"></a>
-                            <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('bill','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm small" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
-                            <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('bill','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm small" ><i class="fa fa-print"></i> </a>
-                            <a href="<?php echo getLinkAdmin('bill','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm small" ><i class="fa fa-edit"></i> </a>
-                            <a href="<?php echo getLinkAdmin('bill','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm small" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
                         </td>
                     </tr>                
                          
