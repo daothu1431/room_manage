@@ -44,7 +44,8 @@ if($userDetail['group_id'] == 7) {
                             </div>
                             <p class="total-desc">Tổng số phòng</p>
                         </div>
-                        <p class="total-count">12</p>
+                        <?php $totalRoom = getRows("SELECT id FROM room") ?>
+                        <p class="total-count"><?php echo $totalRoom ?></p>
                     </div>
                     
                     <div class="content-left-child">
@@ -53,9 +54,12 @@ if($userDetail['group_id'] == 7) {
                                 <div class="content-left-icon">
                                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/st.svg" alt="">
                                 </div>
-                                <p class="total-desc">Tổng số phòng có thể cho thuê</p>
+                                <p class="total-desc">Tổng số phòng đang cho thuê</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <?php $totalRoomThue = getRows("SELECT id FROM room WHERE trangthai=1") ?>
+                            <?php $ratio1 = ($totalRoomThue / $totalRoom) * 100; ?>
+                            <?php $ratio1 = number_format($ratio1, 2) ?>
+                            <p class="total-count"><?php echo $totalRoomThue ?> <span style="font-size: 16px">(<?php echo $ratio1 ?>%)</span></p>
                             <a href=""><div class="dashboard-link"></div></a>
                         </div>
 
@@ -66,7 +70,10 @@ if($userDetail['group_id'] == 7) {
                                 </div>
                                 <p class="total-desc">Tổng số phòng đang trống</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <?php $totalRoomTrong = getRows("SELECT id FROM room WHERE trangthai=0") ?>
+                            <?php $ratio2 = ($totalRoomTrong / $totalRoom) * 100; ?>
+                            <?php $ratio2 = number_format($ratio2, 2) ?>
+                            <p class="total-count"><?php echo $totalRoomTrong ?> <span style="font-size: 16px">(<?php echo $ratio2 ?>%)</span></p>
                             <div class="dashboard-link"><a href=""></a></div>
                         </div>
 
@@ -81,7 +88,11 @@ if($userDetail['group_id'] == 7) {
                                 </div>
                                 <p class="total-desc">Tổng số phòng đang trong hạn hợp đồng</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <?php $contractTotal = getRows("SELECT id From contract") ?>
+                            <?php $contractPass = getRows("SELECT id From contract where trangthaihopdong = 1") ?>
+                            <?php $ratioContract1 = ($contractPass / $contractTotal) * 100; ?>
+                            <?php $ratioContract1 = number_format($ratioContract1, 2) ?>
+                            <p class="total-count"><?php echo $contractPass ?> <span style="font-size: 16px">(<?php echo $ratioContract1 ?>%)</span></p>
                             <a href=""><div class="dashboard-link"></div></a>
                         </div>
 
@@ -92,6 +103,10 @@ if($userDetail['group_id'] == 7) {
                                 </div>
                                 <p class="total-desc">Tổng số phòng đã hết hạn hợp đồng</p>
                             </div>
+                            <?php $contractFail = getRows("SELECT id From contract where trangthaihopdong = 0") ?>
+                            <?php $ratioContract2 = ($contractFail / $contractTotal) * 100; ?>
+                            <?php $ratioContract2 = number_format($ratioContract2, 2) ?>
+                            <p class="total-count"><?php echo $contractFail ?> <span style="font-size: 16px">(<?php echo $ratioContract2 ?>%)</span></p>
                             <p class="total-count">12</p>
                             <div class="dashboard-link"><a href=""></a></div>
                         </div>
@@ -108,7 +123,8 @@ if($userDetail['group_id'] == 7) {
                                 </div>
                                 <p class="total-desc">Tổng số khách thuê</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <?php $toTalTenant = getRows("SELECT id FROM tenant"); ?>
+                            <p class="total-count"><?php echo $toTalTenant ?></p>
                             <a href=""><div class="dashboard-link"></div></a>
                         </div>
 
@@ -117,9 +133,9 @@ if($userDetail['group_id'] == 7) {
                                 <div class="content-left-icon background-icon">
                                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/st.svg" alt="">
                                 </div>
-                                <p class="total-desc">Tổng số hóa đơn</p>
+                                <p class="total-desc">Đang cập nhật</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <p class="total-count">...</p>
                             <a href=""><div class="dashboard-link"></div></a>
                         </div>
 
@@ -128,9 +144,9 @@ if($userDetail['group_id'] == 7) {
                                 <div class="content-left-icon background-icon">
                                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/st.svg" alt="">
                                 </div>
-                                <p class="total-desc">Lợi nhuận</p>
+                                <p class="total-desc">Đang cập nhật</p>
                             </div>
-                            <p class="total-count">12</p>
+                            <p class="total-count">...</p>
                         </div>
                         
                 </div>
@@ -138,25 +154,22 @@ if($userDetail['group_id'] == 7) {
         </div>
     <?php
 } else {
-    $billNear = firstRaw("SELECT * FROM bill WHERE room_id = $roomId ORDER BY create_at DESC LIMIT 1");
-    $id = $billNear['id'];
-    $date = firstRaw("SELECT MONTH(create_at) AS month, YEAR(create_at) AS year FROM bill WHERE id=$id");
-    $tenantId = $billNear['tenant_id'];
-
-    $tenantDetail = firstRaw("SELECT * FROM tenant WHERE id = $tenantId");
-    $roomtDetail = firstRaw("SELECT * FROM room WHERE id = $roomId");
-    $msg =getFlashData('msg');
-    $msgType = getFlashData('msg_type');
-?>
-
-<div id="MessageFlash">          
-    <?php getMsg($msg, $msgType);?>          
-</div>
+    $billCount = getRows("SELECT id FROM bill WHERE room_id = $roomId");
+    if($billCount > 0) {
+        $billNear = firstRaw("SELECT * FROM bill WHERE room_id = $roomId ORDER BY create_at DESC LIMIT 1");
+        $id = $billNear['id'];  
+        $date = firstRaw("SELECT MONTH(create_at) AS month, YEAR(create_at) AS year FROM bill WHERE id=$id");
+        $tenantId = $billNear['tenant_id'];
     
-<!-- <body style="display: flex; justify-content: center; margin-top: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7fafc;"> -->
+        $tenantDetail = firstRaw("SELECT * FROM tenant WHERE id = $tenantId");
+        $roomtDetail = firstRaw("SELECT * FROM room WHERE id = $roomId");
+        $msg =getFlashData('msg');
+        $msgType = getFlashData('msg_type');
+        ?>
+            <!-- <body style="display: flex; justify-content: center; margin-top: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7fafc;"> -->
     <h3 style="padding: 20px 0 20px 20px">Hóa đơn thu tiền nhà T<?php echo $date['month'] ?>/<?php echo $date['year'] ?> - <?php echo $billNear['trangthaihoadon'] == 0 ? '<span class="btn-kyhopdong-err">Chưa thanh toán</span>' : '<span class="btn-kyhopdong-suc">Đã thanh toán</span>' ?></h3>
     <div class="bill-content" style="margin: 0 auto;width: 60%; height: auto; background: #fff; box-shadow: 1px 1px 10px #ccc; text-align: center; padding: 50px 20px; line-height: 1.2;">
-        <img style="width: 150px; " src="https://quanlytro.me/images/logo-quan-ly-tro.png" alt="">
+        <img style="width: 150px; " src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png" alt="">
         <h2 style="font-size: 28px; margin: 10px 0;">Hóa đơn tiền thuê nhà</h2>
         <h4 style="margin-top: 10px; margin-bottom: 15px">Tháng <?php echo $date['month'] ?>/<?php echo $date['year'] ?></h4>
         <p style="font-size: 14px;">Địa chỉ: 597 - Nguyễn Bỉnh Khiêm, Đằng Lâm, Hải An, Hải Phòng</p>
@@ -177,9 +190,9 @@ if($userDetail['group_id'] == 7) {
                 <td><b>Thành tiền</b></td>
             </tr>
             <tr>
-                <td style="font-size: 14px;"><b>Tiền phòng</b></td>
-                <td>30 ngày x <?php echo number_format($roomtDetail['giathue'], 0, ',', '.') ?>đ</td>
-                <td style="font-size: 16px;"><b><?php echo number_format($roomtDetail['giathue'], 0, ',', '.') ?> đ</b></td>
+                 <td style="font-size: 14px;"><b>Tiền phòng</b></td>
+                <td><?php echo $billNear['chuky'] == 0 ? '0' : $billNear['chuky'] ?>tháng x <?php echo number_format($roomtDetail['giathue'], 0, ',', '.') ?> đ + <?php echo $billNear['songayle'] ? $billNear['songayle']: '0' ?> ngày lẻ</td>
+                <td style="font-size: 16px;"><b><?php echo number_format($billNear['tienphong'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 14px;"><b>Tiền điện</b></td>
@@ -227,10 +240,19 @@ if($userDetail['group_id'] == 7) {
         </table>
 
     </div>
+    
 <!-- </body> -->
 </html>
-
-<?php
+        <?php
+          
+        ?>
+        <div id="MessageFlash">          
+            <?php getMsg($msg, $msgType);?>          
+        </div>
+        <?php
+    } else {
+        echo '<img style="width: 70%" src="https://www.course.io.vn/templates/client/assets/img/not-found.jpg" />';
+    }
 }
 
 layout('footer', 'admin');

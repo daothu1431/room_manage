@@ -5,7 +5,7 @@ die('Access denied...');
 
 
 $data = [
-    'pageTitle' => 'Cập nhật thông tin khách thuê'
+    'pageTitle' => 'Cập nhật thông tin người dùng'
 ];
 
 layout('header', 'admin', $data);
@@ -39,7 +39,17 @@ if(isPost()) {
     $body = getBody(); // lấy tất cả dữ liệu trong form
     $errors = [];  // mảng lưu trữ các lỗi
     
-    // Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
+    //Validate nhập lại Password: Bắt buộc phải nhập, giống Password
+   if (!empty(trim($body['password']))) {
+    // Chỉ validate comfirm_password nếu password được nhập 
+       if(empty(trim($body['confirm_password']))) {
+            $errors['confirm_password']['required'] = '** Bạn chưa xác nhận lại mật khẩu !';
+       }else{
+            if(trim($body['password']) != trim($body['confirm_password'])) {
+                $errors['confirm_password']['match'] = '** Xác nhận lại mật khẩu chưa trùng khớp';
+            }
+       }
+   }
   
    // Kiểm tra mảng error
   if(empty($errors)) {
@@ -53,6 +63,11 @@ if(isPost()) {
         'room_id' => $room_id,
         'status' => $body['status'], 
     ];
+
+    // Trường hợp password được sửa
+    if (!empty(trim($body['password']))) { 
+        $dataUpdate['password'] = password_hash($body['password'], PASSWORD_DEFAULT);
+    }
 
     $condition = "id=$id";
     $updateStatus = update('users', $dataUpdate, $condition);
@@ -125,9 +140,7 @@ layout('navbar', 'admin', $data);
                             </select>
                             <?php echo form_error('group_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
-                    </div>
 
-                    <div class="col-5">
                         <div class="form-group">
                             <label for="">Phòng đang ở <span style="color: red">*</span></label>
                             <select name="room_id" id="" class="form-select">
@@ -147,6 +160,10 @@ layout('navbar', 'admin', $data);
                             <?php echo form_error('room_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
+                    </div>
+
+                    <div class="col-5">
+                        
                         <div class="form-group">
                             <label for="">Trạng thái</label>
                             <select name="status" class="form-select">
@@ -154,7 +171,19 @@ layout('navbar', 'admin', $data);
                                 <option value="0" <?php echo (old('status', $old) == 0) ? 'selected':false; ?>>Chưa kích hoạt</option>
                                 <option value="1" <?php echo (old('status', $old) == 1) ? 'selected':false; ?>>Đã kích hoạt</option>
                             </select>
-                        </div>              
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Mật khẩu</label>
+                            <input type="password" name="password" id="" class="form-control" placeholder="Không nhập nếu không thay đổi">
+                            <?php echo form_error('password', $errors, '<span class="error">', '</span>'); ?>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Nhập lại mật khẩu</label>
+                            <input type="password" name="confirm_password" id="" class="form-control" placeholder="Không nhập nếu không thay đổi">
+                            <?php echo form_error('confirm_password', $errors, '<span class="error">', '</span>'); ?>
+                        </div>            
                     </div>     
 
                     <div class="from-group">                    

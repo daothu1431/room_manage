@@ -21,8 +21,17 @@ if(isPost()) {
     $errors = [];  // mảng lưu trữ các lỗi
     
     //Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
+    if(empty(trim($body['danhmucchi_id']))) {
+        $errors['danhmucchi_id']['required'] = '** Bạn chưa chọn danh mục chi';
+    }
     if(empty(trim($body['room_id']))) {
-        $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập hợp đồng!';
+        $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập phiếu chi';
+    }
+    if(empty(trim($body['sotien']))) {
+        $errors['sotien']['required'] = '** Bạn chưa điền số tiền';
+    }
+    if(empty(trim($body['ngaychi']))) {
+        $errors['ngaychi']['required'] = '** Bạn chưa chọn ngày chi';
     }
 
    // Kiểm tra mảng error
@@ -90,6 +99,7 @@ layout('navbar', 'admin', $data);
                                     }
                                 ?>
                             </select>
+                            <?php echo form_error('danhmucchi_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
                         <div class="form-group">

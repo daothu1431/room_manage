@@ -61,6 +61,25 @@
                 </li>
               </ul>
           </li>
+
+          <li class="nav-item has-treeview <?php echo activeMenuSidebar('contract')?'menu-open':false; ?>">
+            <a href="#" class="nav-link <?php echo activeMenuSidebar('contract')?'active':false; ?>">
+              <i class="nav-icon fas fa-solid fa-graduation-cap"></i>
+              <p>
+                Quản lý hợp đồng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+              <ul class="nav nav-treeview">
+
+                <li class="nav-item">
+                  <a href="<?php echo getLinkAdmin('contract', 'view-client'); ?>" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Xem hợp đồng</p>
+                  </a>
+                </li>
+              </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

@@ -19,7 +19,8 @@ $dongiaWifi = firstRaw("SELECT giadichvu FROM services WHERE tendichvu = 'Tiền
 
 
 $allTenant = getRaw("SELECT tenant.id, tenkhach, tenphong FROM tenant INNER JOIN contract ON contract.tenant_id = tenant.id INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
-$allRoom = getRaw("SELECT room.id, tenphong, giathue, soluong, chuky FROM room INNER JOIN contract ON contract.room_id  = room.id ORDER BY tenphong");
+$allRoom = getRaw("SELECT room.id, tenphong, giathue, soluong, chuky, room.ngayvao FROM room INNER JOIN contract ON contract.room_id  = room.id ORDER BY tenphong");
+
 
 // Xử lý thêm người dùng
 if(isPost()) {
@@ -35,6 +36,7 @@ if(isPost()) {
         'mahoadon' => generateInvoiceCode(),
         'tenant_id' => $body['tenant_id'],
         'chuky' => $body['chuky'],
+        'songayle' => $body['songayle'],
         'tienphong' => $body['tienphong'],
         'sodiencu' => $body['sodiencu'],
         'sodienmoi' => $body['sodienmoi'],
@@ -75,6 +77,7 @@ $msg =getFlashData('msg');
 $msgType = getFlashData('msg_type');
 $errors = getFlashData('errors');
 $old = getFlashData('old');
+
 ?>
 <?php
 layout('navbar', 'admin', $data);
@@ -99,7 +102,7 @@ layout('navbar', 'admin', $data);
                                         if(!empty($allRoom)) {
                                             foreach($allRoom as $item) {                                            
                                                     ?>
-                                                        <option data-soluong="<?php echo $item['soluong']; ?>" data-chuky="<?php echo $item['chuky']; ?>" data-giaphong="<?php echo $item['giathue']; ?>" value="<?php echo $item['id'] ?>" <?php echo (!empty($roomId) && $roomId == $item['id'])?'selected':'' ?>><?php echo $item['tenphong'] ?></option> 
+                                                        <option data-ngayvao="<?php echo $item['ngayvao']; ?>"  data-soluong="<?php echo $item['soluong']; ?>" data-chuky="<?php echo $item['chuky']; ?>" data-giaphong="<?php echo $item['giathue']; ?>" value="<?php echo $item['id'] ?>" <?php echo (!empty($roomId) && $roomId == $item['id'])?'selected':'' ?>><?php echo $item['tenphong'] ?></option> 
                                                     <?php                                           
                                             }
                                         }
@@ -132,15 +135,23 @@ layout('navbar', 'admin', $data);
                 <!-- Hàng 2 -->
 
                 <div class="row">
-                    <div class="col-5">
+                    <div class="col-3">
                         <div class="form-group">
-                            <label for="">Chu kỳ <span style="color: red">*</span></label>
+                            <label for="">Số tháng <span style="color: red">*</span></label>
                             <input type="text" name="chuky" id="chuky" class="form-control" > 
                             <?php echo form_error('chuky', $errors, '<span class="error">', '</span>'); ?>
                         </div>
                     </div>
 
-                   <div class="col-5">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Số ngày lẻ <span style="color: red">*</span></label>
+                            <input type="text" name="songayle" id="songayle" class="form-control" > 
+                            <?php echo form_error('songayle', $errors, '<span class="error">', '</span>'); ?>
+                        </div>
+                    </div>
+
+                   <div class="col-3">
                         <div class="form-group">
                             <label for="tienphong">Tiền Phòng</label>
                             <input type="text" class="form-control" id="tienphong" name="tienphong" >
@@ -192,7 +203,7 @@ layout('navbar', 'admin', $data);
                         <div class="water">                      
                             <div class="form-group">
                                 <label for="soluong">Số lượng người</label>
-                                <input type="number" min="0" id="soluongNguoi" class="form-control" name="soluong" required onchange="calculateTienRac()">
+                                <input type="text" min="0" id="soluongNguoi" class="form-control" name="soluong" required onchange="calculateTienRac()">
                             </div>
 
                             <div class="form-group">
@@ -252,19 +263,86 @@ layout('navbar', 'admin', $data);
 layout('footer', 'admin');
 ?>
 <script>
-   
-    // Cập nhật tiền rác & Wifi
-    document.addEventListener('DOMContentLoaded', function() {
-        const dongiaNuoc = <?php echo $donGiaNuoc['giadichvu']; ?>;
-        const dongiaDien = <?php echo $dongiaDien['giadichvu']; ?>;
-        const dongiaRac = <?php echo $dongiaRac['giadichvu']; ?>;
-        const dongiaWifi = <?php echo $dongiaWifi['giadichvu']; ?>;
+document.addEventListener('DOMContentLoaded', function() {
+    const dongiaNuoc = <?php echo $donGiaNuoc['giadichvu']; ?>;
+    const dongiaDien = <?php echo $dongiaDien['giadichvu']; ?>;
+    const dongiaRac = <?php echo $dongiaRac['giadichvu']; ?>;
+    const dongiaWifi = <?php echo $dongiaWifi['giadichvu']; ?>;
 
     function updateRoomDetails() { 
         // Tính toán tiền rác & Wifi
         calculateTienRac();
         calculateTienMang();
         calculateTotal();
+        updateTienPhong();
+        firstMonth();
+        updateSoluong();
+    }
+
+    function updateTienPhong() {
+        const roomSelect = document.getElementById('room_id');
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+        const giaPhong = parseFloat(selectedOption.getAttribute('data-giaphong')) || 0;
+        const sothang = parseFloat(document.getElementById('chuky').value) || 0;
+        const songayle = parseFloat(document.getElementById('songayle').value) || 0;
+
+        // Tính toán tiền phòng
+        var formattedThang = giaPhong * sothang;
+        var formattedSongayle = (giaPhong / 30) * songayle;
+        var tienphong = formattedThang + formattedSongayle;
+
+        // Định dạng số tiền với dấu phân cách hàng nghìn
+        document.getElementById('tienphong').value = numberWithCommas(tienphong) + ' đ';
+        calculateTotal();
+    }
+    // Nếu là tháng đầu tiên vào ở thì thông báo 
+    function firstMonth() {
+        const roomSelect = document.getElementById('room_id');
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+
+        const ngayVaoPhong = selectedOption.getAttribute('data-ngayvao'); // Lấy ngày vào của phòng được chọn
+        const currentMonthYear = getCurrentMonthYear(); // Lấy tháng và năm hiện tại
+
+        // Trích xuất tháng và năm từ ngày vào của phòng
+        const [namPhong, thangPhong] = ngayVaoPhong.split('-');
+
+        // Trích xuất tháng và năm từ thời gian hiện tại
+        const [namHienTai, thangHienTai] = currentMonthYear.split('-');
+
+        // Kiểm tra xem tháng và năm của ngày vào có trùng khớp với tháng và năm hiện tại không
+        if (namPhong === namHienTai && thangPhong === thangHienTai) {
+            alert('Đây là tháng đầu tiên vào ở của phòng này, tính tiền phòng theo số ngày lẻ nha - ngày vào là: ' + reverseDateFormat(ngayVaoPhong))
+        }
+    }
+
+    // Hàm địng dạng thành YYYY-mm-dd
+    function reverseDateFormat(dateString) {
+        const [year, month, day] = dateString.split('-');
+        return `${day}-${month}-${year}`;
+    }
+
+    // Hàm lấy tháng và năm hiện tại (trả về chuỗi 'YYYY-MM')
+    function getCurrentMonthYear() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1; // Lưu ý: getMonth() trả về index bắt đầu từ 0
+        return year + '-' + (month < 10 ? '0' : '') + month;
+    }
+
+    function updateChuky() {
+        const roomSelect = document.getElementById('room_id');
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+        const chuky = selectedOption.getAttribute('data-chuky');
+        
+        document.getElementById('chuky').value = chuky;
+    }
+
+    function updateSoluong() {
+        const roomSelect = document.getElementById('room_id');
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+        const soluong = selectedOption.getAttribute('data-soluong');
+        
+        document.getElementById('soluongNguoi').value = soluong;
     }
 
     function calculateTienNuoc() {
@@ -284,19 +362,20 @@ layout('footer', 'admin');
     }
 
     function calculateTienRac() {
-        const chuky = parseFloat(document.getElementById('chuky').value) || 0;
-        const soluongNguoi = parseFloat(document.getElementById('soluongNguoi').value) || 0;
+        const chuky = parseFloat(document.getElementById('chuky').value) || 1; // Chu kỳ mặc định là 1 tháng nếu không có giá trị
+        const soluongNguoi = parseFloat(document.getElementById('soluongNguoi').value) || 1;
         const tienrac = soluongNguoi * dongiaRac * chuky;
-        const formattedTienRac = numberWithCommas(tienrac);
-        document.getElementById('tienrac').value = formattedTienRac + ' đ';
+        document.getElementById('tienrac').value = numberWithCommas(tienrac) + ' đ';
         calculateTotal();
     }
 
     function calculateTienMang() {
-        const chuky = parseFloat(document.getElementById('chuky').value) || 0;
-        const tienmang = chuky * dongiaWifi;
-        const formattedTienMang = numberWithCommas(tienmang);
-        document.getElementById('tienmang').value = formattedTienMang + ' đ';
+        const chuky = parseFloat(document.getElementById('chuky').value) || null; // Chu kỳ mặc định là 1 tháng nếu không có giá trị
+        const songayle = parseFloat(document.getElementById('songayle').value) || 0;
+        const tienmangThang = chuky * dongiaWifi;
+        const tienmangNgayle = (dongiaWifi / 30) * songayle;
+        let tienmang = Math.ceil(tienmangThang + tienmangNgayle);
+        document.getElementById('tienmang').value = numberWithCommas(tienmang) + ' đ';
         calculateTotal();
     }
 
@@ -326,7 +405,13 @@ layout('footer', 'admin');
     document.getElementById('sodiencu').addEventListener('input', calculateTienDien);
     document.getElementById('sodienmoi').addEventListener('input', calculateTienDien);
     document.getElementById('soluongNguoi').addEventListener('input', calculateTienRac);
-    document.getElementById('chuky').addEventListener('input', calculateTienMang);
+    document.getElementById('chuky').addEventListener('input', function() {
+        calculateTienMang();
+        updateTienPhong();
+        calculateTienRac();
+    });
+    document.getElementById('songayle').addEventListener('input', calculateTienMang);
+    document.getElementById('songayle').addEventListener('input', updateTienPhong);
     document.getElementById('nocu').addEventListener('input', calculateTotal);
 
     document.querySelector('form').addEventListener('submit', function(e) {
@@ -339,14 +424,10 @@ layout('footer', 'admin');
         document.getElementById('tongtien').value = removeCommas(document.getElementById('tongtien').value);
     });
 
-    // Gán sự kiện onchange cho thẻ select chọn phòng
-    document.getElementById('room_id').addEventListener('change', updateRoomDetails);
-
     updateRoomDetails();
 });
 
 </script>
-
 
 
 

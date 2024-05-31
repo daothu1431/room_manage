@@ -59,7 +59,7 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
             <!-- Logo -->
             <a href="<?php echo _WEB_HOST_ROOT.'/admin' ?>" class="logo">
               <img
-                  src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo.png"
+                  src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png"
                   alt=""
                   class="logo__image"
               />
@@ -67,26 +67,6 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
             </a>
 
             <div class="nav__list">
-                <a href="" class="nav__item">
-                  <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
-                  <span>Quản lý nhà</span>
-                </a>
-
-                <a href="" class="nav__item">
-                  <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
-                  <span>Tổng báo cáo</span>
-                </a>
-
-                <a href="" class="nav__item">
-                  <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
-                  <span>Cài đặt chung</span>
-                </a>
-
-                <a href="" class="nav__item">
-                  <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
-                  <span>Thông báo</span>
-                </a>
-
                 <a href="" class="nav__item">
                   <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
                   <span>Tài khoản</span>
@@ -97,27 +77,6 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
                   <span>Đăng xuất</span>
                 </a>
             </div>
-
-            <!-- Action -->
-            <!-- <li class="nav-item dropdown">
-              <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="far fa-user"></i> Hi, <?php echo $userDetail['fullname']; ?>
-              </a>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="margin-right: 10px; width: 200px">
-                  <a href="<?php echo getLinkAdmin('users','profile') ?>" class="dropdown-item">
-                    <i class="fas fa-solid fa-user" style="margin-right: 5px"></i>
-                    Thông tin cá nhân
-                  </a>
-                  <a href="<?php echo getLinkAdmin('users','change_pass'); ?>" class="dropdown-item">
-                    <i class="fas fa-solid fa-unlock" style="margin-right: 5px"></i>
-                    Đổi mật khẩu
-                  </a>
-                  <a href="<?php echo getLinkAdmin('auth','logout'); ?>" class="dropdown-item">
-                    <i class="fas fa-solid fa-arrow-right" style="margin-right: 5px"></i>
-                    Đăng xuất
-                  </a>
-              </div>
-              </li> -->
         </div>
     </header>
 

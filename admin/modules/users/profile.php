@@ -3,9 +3,8 @@ $data = [
     'pageTitle' => 'Cập nhật thông tin cá nhân'
 ];
 
-layout('header', 'admin', $data);
+layout('header-tenant', 'admin', $data);
 layout('sidebar', 'admin', $data);
-layout('breadcrumb', 'admin', $data);
 
 $userId = isLogin()['user_id'];
 $userDetail = getUserInfo($userId); 
@@ -51,7 +50,6 @@ if(isPost()) {
         $dataUpdate = [
             'email' => $body['email'],
             'fullname' => $body['fullname'],
-            'update_at' => date('Y-m-d H:i:s'),
         ];
 
 
@@ -74,7 +72,7 @@ if(isPost()) {
     }
 
     
-    redirect('?module=users&action=lists');
+    redirect('admin/?module=users&action=profile');
 }
 $msg =getFlashData('msg');
 $msgType = getFlashData('msg_type');
@@ -94,10 +92,9 @@ if (!empty($userDetail) && empty($old)) {
     <section class="content">
       <div class="container-fluid">
 
-            <?php
-
-                getMsg($msg, $msgType);
-            ?>
+      <div id="MessageFlash">
+            <?php getMsg($msg, $msgType);?> 
+        </div>
             <form action="" method="post">
                 <div class="row">
                     <div class="col-4">
@@ -113,7 +110,7 @@ if (!empty($userDetail) && empty($old)) {
                             <input type="text" name="email" id="email" class="form-control" value="<?php echo old('email', $old); ?>">
                             <?php echo form_error('email', $errors, '<span class="error">', '</span>'); ?>
                         </div>
-                    </div>                  
+                    </div>             
                 </div>
 
                 <button type="submit" class="btn btn-primary">Cập nhật</button>

@@ -35,32 +35,30 @@ if (isGet()) {
     if(!empty($body['keyword'])) {
         $keyword = $body['keyword'];
         
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
             $operator = 'AND';
         }else {
             $operator = 'WHERE';
         }
 
         $filter .= " $operator mahoadon LIKE '%$keyword%'";
-
     }
 
-    // Xử lý lọc theo từ khóa
+    // Xử lý lọc theo ngày hóa đơn
     if(!empty($body['datebill'])) {
         $datebill = $body['datebill'];
         
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
             $operator = 'AND';
         }else {
             $operator = 'WHERE';
         }
 
         $filter .= " $operator create_at LIKE '%$datebill%'";
-
     }
 
-    //Xử lý lọc Status
-    if(!empty($body['status'])) {
+     // Xử lý lọc Status theo trạng thái hoadon
+     if(!empty($body['status'])) {
         $status = $body['status'];
 
         if($status == 2) {
@@ -69,9 +67,9 @@ if (isGet()) {
             $statusSql = $status;
         }
 
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
             $operator = 'AND';
-        }else {
+        } else {
             $operator = 'WHERE';
         }
         
@@ -94,8 +92,8 @@ if(!empty(getBody()['page'])) {
     $page = 1;
 }
 $offset = ($page - 1) * $perPage;
-$listAllBill = getRaw("SELECT *, bill.id, room.tenphong, tenant.zalo FROM bill 
-INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter ORDER BY bill.create_at DESC LIMIT $offset, $perPage");
+$listAllBill = getRaw("SELECT *, bill.id, bill.chuky, room.tenphong, tenant.zalo FROM bill 
+INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter  ORDER BY bill.create_at DESC  LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -131,7 +129,7 @@ layout('navbar', 'admin', $data);
                 <div class="col-3">
                     <div class="form-group">
                         <select name="status" id="" class="form-select">
-                            <option value="0">Chọn trạng thái</option>
+                            <option value="">Chọn trạng thái</option>
                             <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Đã thu</option>
                             <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Chưa thu</option>
                         </select>
@@ -162,24 +160,24 @@ layout('navbar', 'admin', $data);
             <a href="<?php echo getLinkAdmin('bill', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
             <a href="<?php echo getLinkAdmin('bill', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
 
-            <table class="table table-bordered mt-3">
+            <table class="table table-bordered mt-3" style="overflow-x: auto;">
                 <thead>
                     <tr>
                         <th width="3%" rowspan="2"></th>
                         <th rowspan="2">Tên phòng</th>
-                        <th colspan="2">Tiền phòng</th>
+                        <th colspan="3">Tiền phòng</th>
                         <th colspan="3">Tiền điện (1.700đ)</th>
                         <th colspan="3">Tiền nước (20.000đ)</th>
                         <th colspan="2">Tiền rác (10.000đ)</th>
                         <th colspan="2">Tiền Wifi (50.000đ)</th>
                         <th rowspan="2">Nợ cũ</th>
                         <th rowspan="2">Tổng cộng</th>
-                        <th rowspan="2">Ngày lập</th>
                         <th rowspan="2">Trạng thái</th>
                         <th rowspan="2">Thao tác</th>
                     </tr>
                     <tr>
-                        <th>Số tháng</th>
+                        <th width="3%">Số tháng</th>
+                        <th width="4%">Ngày lẻ</th>
                         <th>Tiền phòng</th>
                         <th>Số cũ</th>
                         <th>Số mới</th>
@@ -210,6 +208,7 @@ layout('navbar', 'admin', $data);
                         </td>
                         <td><?php echo $item['tenphong']; ?></td>
                         <td><?php echo $item['chuky']; ?></td>
+                        <td><?php echo $item['songayle']; ?></td>
                         <td><b><?php echo number_format($item['tienphong'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['sodiencu']; ?></td>
                         <td><?php echo $item['sodienmoi']; ?></td>
@@ -223,12 +222,12 @@ layout('navbar', 'admin', $data);
                         <td><b><?php echo number_format($item['tienmang'], 0, ',', '.') ?> đ</b></td>
                         <td><b><?php echo number_format($item['nocu'], 0, ',', '.') ?> đ</b></td>
                         <td style="color: #db2828"><b><?php echo number_format($item['tongtien'], 0, ',', '.') ?> đ</b></td>
-                        <td><?php echo $item['create_at']; ?></td>
                         <td>
                             <?php 
                                  echo $item['trangthaihoadon'] == 1 ? '<span class="btn-kyhopdong-suc">Đã thu</span>':'<span class="btn-kyhopdong-err">Chưa thu</span>';
                             ?>
                         </td>
+                        
                         <td>
                             <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" class="small"></a>
                             <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('bill','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm small" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
@@ -298,4 +297,15 @@ layout('footer', 'admin');
             checkbox[index].checked = isChecked
         }
     }
+
+    const btnShow = document.getElementById('btnShow');
+    const divShow = document.getElementById('divShow');
+
+    btnShow.addEventListener('click', function() {
+        if (divShow.style.display === 'none' || divShow.style.display === '') {
+            divShow.style.display = 'block';
+        } else {
+            divShow.style.display = 'none';
+        }
+    });
 </script>

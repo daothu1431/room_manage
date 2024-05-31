@@ -136,7 +136,7 @@ layout('navbar', 'admin', $data);
             </div>
 
             <div class="col-4">
-                    <input style="height: 50px" type="search" name="keyword" class="form-control" placeholder="Nhập tên khách cần tìm" value="<?php echo (!empty($keyword))? $keyword:false; ?>" >
+                    <input style="height: 50px" type="search" name="keyword" class="form-control" placeholder="Nhập tên phòng cần tìm" value="<?php echo (!empty($keyword))? $keyword:false; ?>" >
             </div>
 
             <div class="col">

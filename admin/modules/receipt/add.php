@@ -22,7 +22,16 @@ if(isPost()) {
     
     //Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
     if(empty(trim($body['room_id']))) {
-        $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập hợp đồng!';
+        $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập phiếu thu';
+    }
+    if(empty(trim($body['danhmucthu_id']))) {
+        $errors['danhmucthu_id']['required'] = '** Bạn chưa chọn danh mục để lập phiếu';
+    }
+    if(empty(trim($body['sotien']))) {
+        $errors['sotien']['required'] = '** Bạn chưa điền số tiền thu';
+    }
+    if(empty(trim($body['ngaythu']))) {
+        $errors['ngaythu']['required'] = '** Bạn chưa chọn ngày thu';
     }
 
    // Kiểm tra mảng error
@@ -91,6 +100,7 @@ layout('navbar', 'admin', $data);
                                     }
                                 ?>
                             </select>
+                            <?php echo form_error('danhmucthu_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
                         <div class="form-group">

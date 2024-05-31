@@ -1,7 +1,6 @@
 <?php
 
-if(!defined('_INCODE'))
-die('Access denied...');
+if (!defined('_INCODE')) die('Access denied...');
 
 $data = [
     'pageTitle' => 'Quản lý dịch vụ'
@@ -14,74 +13,84 @@ $currentMonthYear = date('Y-m');
 
 // Xử lý lọc dữ liệu
 $filter = '';
+$datebill = $currentMonthYear; // Thiết lập giá trị mặc định
 if (isGet()) {
     $body = getBody('get');
 
     // Xử lý lọc theo từ khóa
-    if(!empty($body['datebill'])) {
+    if (!empty($body['datebill'])) {
         $datebill = $body['datebill'];
-        
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
-            $operator = 'AND';
-        }else {
-            $operator = 'WHERE';
-        }
-
-        $filter .= " $operator bill.create_at LIKE '%$datebill%'";
-
     }
 }
+
+if (!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+    $operator = 'AND';
+} else {
+    $operator = 'WHERE';
+}
+
+$filter .= " $operator bill.create_at LIKE '%$datebill%'";
 
 $allService = getRaw("SELECT * FROM services");
 $listAllBill = getRaw("SELECT *, bill.id, room.tenphong, tenant.zalo FROM bill 
 INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter ORDER BY bill.create_at DESC ");
 
-// Xử lý thêm người dùng
-if(isPost()) {
-    // Validate form
-    $body = getBody(); // lấy tất cả dữ liệu trong form
-    $errors = [];  // mảng lưu trữ các lỗi
-    
-    //Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
-    if(empty(trim($body['tendichvu']))) {
+// Xử lý Thêm/Sửa dịch vụ
+if (isPost()) {
+    $body = getBody();
+    $errors = [];
+
+    if (empty(trim($body['tendichvu']))) {
         $errors['tendichvu']['required'] = '** Bạn chưa nhập tên dịch vụ';
     }
 
-    if(empty(trim($body['donvitinh']))) {
+    if (empty(trim($body['donvitinh']))) {
         $errors['donvitinh']['required'] = '** Bạn chưa chọn đơn vị tính';
     }
 
-    if(empty(trim($body['giadichvu']))) {
+    if (empty(trim($body['giadichvu']))) {
         $errors['giadichvu']['required'] = '** Bạn chưa nhập giá dịch vụ';
     }
-   
-   // Kiểm tra mảng error
-  if(empty($errors)) {
-    // không có lỗi nào
-    $dataInsert = [
-        'tendichvu' => $body['tendichvu'],
-        'donvitinh' => $body['donvitinh'],
-        'giadichvu' => $body['giadichvu'],
-    ];
 
-    $insertStatus = insert('services', $dataInsert);
-    if ($insertStatus) {
-        setFlashData('msg', 'Thêm dịch vụ khách hàng thành công');
-        setFlashData('msg_type', 'suc');
+    if (empty($errors)) {
+        $dataSave = [
+            'tendichvu' => $body['tendichvu'],
+            'donvitinh' => $body['donvitinh'],
+            'giadichvu' => $body['giadichvu'],
+        ];
+
+        if (!empty($body['id'])) {
+            // Xử lý cập nhật dữ liệu
+            $updateStatus = update('services', $dataSave, "id=" . $body['id']);
+            if ($updateStatus) {
+                setFlashData('msg', 'Cập nhật dịch vụ thành công');
+                setFlashData('msg_type', 'suc');
+            } else {
+                setFlashData('msg', 'Có lỗi xảy ra, vui lòng thử lại');
+                setFlashData('msg_type', 'err');
+            }
+        } else {
+            // Xử lý thêm mới
+            $insertStatus = insert('services', $dataSave);
+            if ($insertStatus) {
+                setFlashData('msg', 'Thêm dịch vụ khách hàng thành công');
+                setFlashData('msg_type', 'suc');
+            } else {
+                setFlashData('msg', 'Có lỗi xảy ra, vui lòng thử lại');
+                setFlashData('msg_type', 'err');
+            }
+        }
+
         redirect('admin/?module=services');
-    }
-
-  }else {
-        // Có lỗi xảy ra
+    } else {
         setFlashData('msg', 'Vui lòng kiểm tra chính xác thông tin nhập vào');
         setFlashData('msg_type', 'err');
         setFlashData('errors', $errors);
-        setFlashData('old', $body);  // giữ lại các trường dữ liệu hợp lê khi nhập vào
+        setFlashData('old', $body);
     }
-
 }
 
-$msg =getFlashData('msg');
+$msg = getFlashData('msg');
 $msgType = getFlashData('msg_type');
 $errors = getFlashData('errors');
 $old = getFlashData('old');
@@ -97,44 +106,36 @@ layout('navbar', 'admin', $data);
         <?php getMsg($msg, $msgType);?>          
     </div>
 
-
-    <!-- Them -->
-    <div id="myModal" class="modal">
+    <!-- Thêm/Sửa -->
+    <div id="serviceModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h4 style="margin: 20px 0">Thêm dịch vụ mới</h4>
+            <span class="close" onclick="closeServiceModal()">&times;</span>
+            <h4 id="modalTitle" style="margin: 20px 0">Thêm dịch vụ mới</h4>
             <hr />
-            <form action="" method="post" class="row" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">Tên dịch vụ <span style="color: red">*</span></label>
-                        <input type="text" placeholder="Tên dịch vụ" name="tendichvu" id="" class="form-control" value="<?php echo old('tendichvu', $old); ?>">
-                        <?php echo form_error('tendichvu', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="">Đơn vị tính <span style="color: red">*</span></label>
-                        <select name="donvitinh" id="" class="form-select">
-                            <option value="">Chọn đơn vị</option>
-                            <option value="KWh">KWh</option>
-                            <option value="khoi">Khối</option>
-                            <option value="nguoi">Người</option>
-                            <option value="thang">Tháng</option>
-                        </select>
-                        <?php echo form_error('donvitinh', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="">Giá dịch vụ <span style="color: red">*</span></label>
-                        <input type="text" placeholder="Giá dịch vụ" name="giadichvu" id="" class="form-control" value="<?php echo old('giadichvu', $old); ?>">
-                        <?php echo form_error('giadichvu', $errors, '<span class="error">', '</span>'); ?>
-                    </div>
-
+            <form id="serviceForm" method="post">
+                <input type="hidden" name="id" id="serviceId">
+                <div class="form-group">
+                    <label for="tendichvu">Tên dịch vụ <span style="color: red">*</span></label>
+                    <input type="text" placeholder="Tên dịch vụ" name="tendichvu" id="tendichvu" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="donvitinh">Đơn vị tính <span style="color: red">*</span></label>
+                    <select name="donvitinh" id="donvitinh" class="form-select">
+                        <option value="">Chọn đơn vị</option>
+                        <option value="KWh">KWh</option>
+                        <option value="khoi">Khối</option>
+                        <option value="nguoi">Người</option>
+                        <option value="thang">Tháng</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="giadichvu">Giá dịch vụ <span style="color: red">*</span></label>
+                    <input type="text" placeholder="Giá dịch vụ" name="giadichvu" id="giadichvu" class="form-control">
                 </div>
                 <div class="form-group">                    
                     <div class="btn-row">
-                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Thêm dịch vụ</button>
-                        <a style="margin-left: 20px " href="<?php echo getLinkAdmin('services') ?>" class="btn btn-success"><i class="fa fa-forward"></i></a>
+                        <button style="margin-right: 10px" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Lưu</button>
+                        <button type="button" class="btn btn-danger" onclick="closeServiceModal()">Hủy</button>
                     </div>
                 </div>
             </form>
@@ -148,8 +149,7 @@ layout('navbar', 'admin', $data);
                     <h3>Quản lý dịch vụ</h3>
                     <i>Các dịch vụ khách thuê xài</i>
                 </div>
-                <button id="openModalBtn" class="service-btn" style="border: none; color: #fff"><i class="fa fa-plus"></i></button>
-                <!-- <a id="openModalBtn" href="#" class="service-btn" style="color: #fff"><i class="fa fa-plus"></i></a> -->
+                <button class="service-btn" style="border: none; color: #fff" onclick="openServiceModal()"><i class="fa fa-plus"></i></button>
             </div>
 
             <?php 
@@ -164,16 +164,14 @@ layout('navbar', 'admin', $data);
 
                                 <div>
                                     <h6><?php echo $item['tendichvu'] ?></h6>
-                                    <p><?php echo $item['giadichvu']?>đ/<?php echo $item['donvitinh'] ?></p>
+                                    <p><?php echo  number_format($item['giadichvu'], 0, ',', '.')?>đ/<?php echo $item['donvitinh'] ?></p>
                                     <i>Đang áp dụng cho các phòng</i>
                                 </div>
                             </div>
 
                             <div class="service-item_right">
                                 <div class="edit">
-
-                                    <a href="<?php echo getLinkAdmin('services','edit',['id' => $item['id']]); ?>"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-edit.svg" alt=""></a>
-                                 
+                                    <a href="javascript:void(0)" onclick="openServiceModal('<?php echo $item['id']; ?>', '<?php echo $item['tendichvu']; ?>', '<?php echo $item['donvitinh']; ?>', '<?php echo $item['giadichvu']; ?>')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-edit.svg" alt=""></a>
                                 </div>
                                 <div class="del">
                                     <a href="<?php echo getLinkAdmin('services','delete',['id' => $item['id']]); ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ không ?')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-delete.svg" alt=""></a>
@@ -182,9 +180,7 @@ layout('navbar', 'admin', $data);
                         </div>
                     <?php
                 }
-                
              ?>
-            
         </div>
 
         <div class="service-right">
@@ -204,14 +200,12 @@ layout('navbar', 'admin', $data);
 
                                 <div class="col">
                                         <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
-                                </div>   
+                                 </div>   
                             </div>
                             <input type="hidden" name="module" value="services">
                         </form>
                     </div>
                 </div>
-
-                
 
                 <table class="table table-bordered mt-3">
                 <thead>
@@ -239,11 +233,10 @@ layout('navbar', 'admin', $data);
                 <tbody id="roomData">
         
                     <?php
-                        if(!empty($listAllBill)):
+                        if (!empty($listAllBill)):
                             $count = 0; // Hiển thi số thứ tự
-                            foreach($listAllBill as $item):
+                            foreach ($listAllBill as $item):
                                 $count ++;
-        
                     ?>
                      <tr>
                         <td>
@@ -274,14 +267,12 @@ layout('navbar', 'admin', $data);
                 </tbody>
             </table>
         </div>
-    <div>
+    </div>
 </div>
 
 <?php
-
 layout('footer', 'admin');
 ?>
-
 <script>
     function toggle(__this){
        let isChecked = __this.checked;
@@ -289,5 +280,24 @@ layout('footer', 'admin');
         for (let index = 0; index < checkbox.length; index++) {
             checkbox[index].checked = isChecked
         }
+    }
+
+    function openServiceModal(id = '', tendichvu = '', donvitinh = '', giadichvu = '') {
+        document.getElementById('serviceId').value = id;
+        document.getElementById('tendichvu').value = tendichvu;
+        document.getElementById('donvitinh').value = donvitinh;
+        document.getElementById('giadichvu').value = giadichvu;
+
+        if (id) {
+            document.getElementById('modalTitle').innerText = 'Sửa dịch vụ';
+        } else {
+            document.getElementById('modalTitle').innerText = 'Thêm dịch vụ mới';
+        }
+
+        document.getElementById('serviceModal').style.display = 'block';
+    }
+
+    function closeServiceModal() {
+        document.getElementById('serviceModal').style.display = 'none';
     }
 </script>

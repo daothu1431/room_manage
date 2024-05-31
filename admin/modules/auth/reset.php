@@ -1,8 +1,9 @@
 <?php
 if (!defined('_INCODE')) die('Access Deined...');
+
 /*File này chứa chức năng đặt lại mật khẩu*/
 layout('header-login', 'admin');
-echo '<div class="container text-center"><br/>';
+echo '<div class="container "><br/>';
 $token = getBody()['token'];
 
 if (!empty($token)){
@@ -45,13 +46,12 @@ if (!empty($token)){
                 $dateUpdate = [
                     'password' => $passwordHash,
                     'forget_token' => null,
-                    'update_at' => date('Y-m-d H:i:s')
                 ];
                 $updateStatus = update('users', $dateUpdate, "id=$user_id");
                 if ($updateStatus){
 
                     setFlashData('msg', 'Thay đổi mật khẩu thành công');
-                    setFlashData('msg_type', 'success');
+                    setFlashData('msg_type', 'suc');
 
                     //Gửi email thông báo khi đổi xong
                     $subject = 'Bạn vừa đổi mật khẩu';
@@ -60,15 +60,16 @@ if (!empty($token)){
 
                     redirect('admin/?module=auth&action=login');
                 }else{
-                    setFlashData('msg', 'Lỗi hệ thống! Bạn không thể đổi mật khẩu');
-                    setFlashData('msg_type', 'danger');
+                    setFlashData('msg', 'Lỗi! Bạn không thể đổi mật khẩu');
+                    setFlashData('msg_type', 'err');
 
-                    redirect('?module=auth&action=reset&token='.$token);
+                    redirect('admin/?module=auth&action=reset&token='.$token);
                 }
 
-            }else{
-                setFlashData('msg', 'Vui lòng kiểm tra dữ liệu nhập vào');
-                setFlashData('msg_type', 'danger');
+            }
+            else{
+                // setFlashData('msg', 'Vui lòng kiểm tra dữ liệu nhập vào');
+                // setFlashData('msg_type', 'err');
                 setFlashData('errors', $errors);
                 redirect('admin/?module=auth&action=reset&token='.$token);
             }
@@ -81,7 +82,7 @@ if (!empty($token)){
         $errors = getFlashData('errors');
 
         ?>
-        <div class="row text-left">
+        <!-- <div class="row text-left">
             <div class="col-3" style="margin: 20px auto;">
                <div class="reset">
                 <h3 class="text-center text-uppercase" style="margin-bottom: 20px;">Đặt lại mật khẩu</h3>
@@ -106,7 +107,36 @@ if (!empty($token)){
                     </form>
                </div>
             </div>
-        </div>
+        </div> -->
+
+        <body id="body-login">
+            <div id="MessageFlash">
+                <?php getMsg($msg, $msgType);?> 
+            </div>
+            <div class="col-3" style="margin: 20px auto;">
+                <div class="login">
+                    <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png" class="logo-login" alt="">
+                    <p class="text-center title-login">ĐỔI MẬT KHẨU</p>
+                    <p class="text-center" style="color: #000; margin-bottom: 20px">Hệ thống quản lý phòng trọ cho thuê</p>
+
+                    <form style="text-align: left; margin-top: 25px" action="" method="post">     
+                        <div class="form-group">
+                            <label for="">Mật khẩu mới</label> <br />
+                            <input type="password" name="password" placeholder="Mật khẩu mới">
+                            <?php echo form_error('password', $errors, '<span class="error">', '</span>'); ?>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Xác nhận mật khẩu</label> <br />
+                            <input type="password" name="confirm_password" class="" placeholder="Nhập lại mật khẩu">
+                            <?php echo form_error('confirm_password', $errors, '<span class="error">', '</span>'); ?>
+                        </div>
+                        <button type="submit" class="btn-login">Xác nhận</button>
+                        <hr />
+                        <input type="hidden" name="token" value="<?php echo $token; ?>">
+                    </form>
+                </div>
+            </div>
+        </body>
         <?php
 
     }else{

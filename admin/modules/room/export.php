@@ -108,7 +108,8 @@ $spreadsheet->getActiveSheet()->getStyle('A2:J2')->applyFromArray($tableHead);
 $spreadsheet->getActiveSheet()
             ->getStyle('E')
             ->getNumberFormat()
-            ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD);
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER);
+            //FORMAT_DATE_YYYYMMDD
 
 $spreadsheet->getActiveSheet()
             ->getStyle('F')
@@ -148,7 +149,7 @@ $spreadsheet->getActiveSheet()->setAutoFilter("A".$firstRow.":J".$lastRow);
 
 
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="result.xlsx"');
+header('Content-Disposition: attachment;filename="Danh sách phòng.xlsx"');
 
 // $writer = IOFactory::createWriter($spreadsheet, 'Xlsx'); 
 $writer = new Xlsx($spreadsheet);

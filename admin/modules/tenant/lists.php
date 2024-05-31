@@ -152,7 +152,7 @@ layout('navbar', 'admin', $data);
 
         <form action="" method="POST" class="mt-3">
     <div>
-  
+
 </div>
             <a href="<?php echo getLinkAdmin('tenant', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
             <a href="<?php echo getLinkAdmin('tenant', 'lists'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
@@ -160,12 +160,6 @@ layout('navbar', 'admin', $data);
             <a href="<?php echo getLinkAdmin('tenant', 'import'); ?>" class="btn btn-success minn"><i class="fa fa-upload"></i> Import</a>
             <a href="<?php echo getLinkAdmin('tenant', 'export'); ?>" class="btn btn-success minn"><i class="fa fa-save"></i> Xuất Excel</a>
             
-            <!-- Modal để preview ảnh -->
-            <div id="myModal" class="modal">
-                <span class="close">&times;</span>
-                <img class="modal-content" id="img01">
-            </div>
-
             <table class="table table-bordered mt-3" id="dataTable">
                 <thead>
                     <tr>
@@ -221,7 +215,7 @@ layout('navbar', 'admin', $data);
                         </td>
                         <td><?php echo $item['cmnd'] ?></td>
                         <td><?php echo $item['ngaycap'] ?></td>
-                        <td><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'" width=70 height=50/>' ?></td>
+                        <td ><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'"  width=70 height=50/>' ?></td>
                         <td><?php echo (isFontIcon($item['anhmatsau']))?$item['anhmatsau']:'<img src="'.$item['anhmatsau'].'" width=70 height=50/>' ?></td>
                         <td><p class="btn btn-info btn-sm" style="color: #fff; font-size: 12px"><?php echo $item['tenphong'] ?></p></td>
 
@@ -290,5 +284,5 @@ layout('footer', 'admin');
         for (let index = 0; index < checkbox.length; index++) {
             checkbox[index].checked = isChecked
         }
-    }        
+    }   
 </script>

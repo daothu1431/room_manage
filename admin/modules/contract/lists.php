@@ -22,12 +22,13 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
+
 // Xử lý lọc dữ liệu
 $filter = '';
 if (isGet()) {
     $body = getBody('get');
 
-    //Xử lý lọc Status
+    // Xử lý lọc Status theo trạng thái hợp đồng
     if(!empty($body['status'])) {
         $status = $body['status'];
 
@@ -37,13 +38,32 @@ if (isGet()) {
             $statusSql = $status;
         }
 
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
             $operator = 'AND';
-        }else {
+        } else {
             $operator = 'WHERE';
         }
         
         $filter .= "$operator contract.trangthaihopdong=$statusSql";
+    }
+
+    // Xử lý lọc Status theo tình trạng cọc
+    if(!empty($body['coc'])) {
+        $status2 = $body['coc'];
+
+        if($status2 == 2) {
+            $statusSql2 = 0;
+        } else {
+            $statusSql2 = $status2;
+        }
+
+        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
+            $operator = 'AND';
+        } else {
+            $operator = 'WHERE';
+        }
+        
+        $filter .= "$operator tinhtrangcoc=$statusSql2";
     }
 }
 
@@ -113,9 +133,19 @@ layout('navbar', 'admin', $data);
             <div class="col-3">
                 <div class="form-group">
                     <select name="status" id="" class="form-select">
-                        <option value="">Chọn trạng thái</option>
+                        <option value="">Chọn trạng thái hợp đồng</option>
                         <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Trong thời hạn</option>
                         <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-3">              
+                <div class="form-group">
+                    <select name="coc" id="" class="form-select">
+                        <option value="">Chọn trạng thái cọc</option>
+                        <option value="1" <?php echo (!empty($status2) && $status2==1) ? 'selected':false; ?>>Đã thu</option>
+                        <option value="2" <?php echo (!empty($status2) && $status2==2) ? 'selected':false; ?>>Chưa thu</option>
                     </select>
                 </div>
             </div>
@@ -201,7 +231,6 @@ layout('navbar', 'admin', $data);
                                 }
                                 
                             ?>
-                            <!-- <?php echo $item['trangthaihopdong'] == 0 ? '<span class="btn-status-suc">Trong thời hạn</span>' : '<span class="btn-status-err">Đã kết thúc</span>' ?> -->
                         </td>                
                         <td class="">
                             <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>

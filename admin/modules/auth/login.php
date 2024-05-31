@@ -71,33 +71,37 @@ $msg = getFlashData('msg');
 $msgType = getFlashData('msg_type');
 $old = getFlashData('old');
 ?>
-<div class="row">
-    <div class="col-3" style="margin: 20px auto;">
-        <div class="login">
-        <h5 class="text-center">WElCOME TO EDUCATION</h5>
-        <p class="text-center" style="color: #b2b1b1; margin-bottom: 20px">Hệ thống quản lý website Education</p>
 
+<body id="body-login">
         <div id="MessageFlash">
             <?php getMsg($msg, $msgType);?> 
         </div>
+    <div class="col-3" style="margin: 20px auto;">
+        <div class="login">
+            <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png" class="logo-login" alt="">
+        <p class="text-center title-login">WELCOME TO NGOC CHIEN</p>
+        <p class="text-center" style="color: #000; margin-bottom: 20px">Hệ thống quản lý phòng trọ cho thuê</p>
+
+
 
         <form action="" method="post">
             
             <div class="form-group">
-            <label for="">Email</label>
-            <input type="email" name="email" class="form-control" placeholder="Địa chỉ email..." value="<?php echo old('email', $old); ?>">
+                <label for="">Email</label> <br />
+                <input type="email" name="email" class="" placeholder="Email" value="<?php echo old('email', $old); ?>">
             </div>
             <div class="form-group">
-            <label for="">Mật khẩu</label>
-            <input type="password" name="password" class="form-control" placeholder="Mật khẩu...">
+                <label for="">Mật khẩu</label><br />
+                <input type="password" name="password" class="" placeholder="Mật khẩu">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+            <button type="submit" class="btn-login">Đăng nhập</button>
             <hr>
-            <p class="text-center"><a href="?module=auth&action=forgot">Quên mật khẩu?</a></p>
+            <p class="text-center"><a href="?module=auth&action=for">Quên mật khẩu?</a></p>
         </form>
         </div>
     </div>
-</div>
+</body>
+
 <?php
 
 layout('footer-login', 'admin');

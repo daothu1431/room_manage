@@ -44,9 +44,9 @@ $pdf->SetKeywords('Keywords');
 // HTML content
 $html = '
 
-<body style="display: flex; justify-content: center;font-family: DejaVu Sans, Tahoma, Geneva, Verdana, sans-serif; background-color: #f7fafc;">
+<body  style="padding: 0; display: flex; justify-content: center;font-family: DejaVu Sans, Tahoma, Geneva, Verdana, sans-serif; ">
     <div class="bill-content" style="width: 60%; height: auto; background: #fff;  text-align: center; line-height: 1.2;">
-        <img style="width: 100px;" src="https://quanlytro.me/images/logo-quan-ly-tro.png" alt="">
+       
         <h2 style="font-size: 20px; margin: 10px 0;">Hóa đơn tiền thuê nhà</h2>
         <h3 style="margin-top: 10px; font-size: 12px">Tháng ' . $date['month'] . '/' . $date['year'] . '</h3>
         <p style="font-size: 12px;">Địa chỉ: 597 - Nguyễn Bỉnh Khiêm, Đằng Lâm, Hải An, Hải Phòng</p>
@@ -93,14 +93,14 @@ $html = '
             </tr>
             <tr>
                 <td style="font-size: 10px;"><b>Tổng tiền</b></td>
-                <td colspan="2" style="text-align: right; font-size: 15px; color: #dc3545;"><b>' . number_format($billDetail['tongtien'], 0, ',', '.') . ' đ</b></td>
+                <td colspan="2" style="text-align: right; font-size: 12px; color: #dc3545;"><b>' . number_format($billDetail['tongtien'], 0, ',', '.') . ' đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 10px;"><b>Thanh toán</b></td>
                 <td colspan="2">
                    <div>
                         <img style="width: 80px; height: 80px;" src="https://jeju.com.vn/wp-content/uploads/2020/05/vnpay-qr-23-06-2020-2.jpg" alt="">
-                        <p style="font-size: 12px;"><i><b>Nội dung thanh toán: </b></i><strong style="color: red">Mã hóa đơn</strong></p>                           
+                        <p style="font-size: 10px;"><i><b>Nội dung thanh toán: </b></i><strong style="color: red">Mã hóa đơn</strong></p>                           
                    </div>
                 </td>
             </tr>

@@ -121,15 +121,15 @@
           <p><strong>Điều 1:</strong></p>
                     <ul style="list-style-type: circle;">
                         <li> <span>Bên A đồng ý cho bên B thuê một phòng trọ thuộc địa chỉ: 597 - Nguyễn Bỉnh Khiêm, Đằng Lâm, Hải An, Hải Phòng </span></li>
-                        <li><span>Thời hạn thuê phòng trọ là ......... tháng kể từ ngày 24/04/2024  </span></li>
+                        <li><span>Thời hạn thuê phòng trọ là kể từ ngày <?php echo $contractDetail['ngayvao'] ?> đến ngày <?php echo $contractDetail['ngayra'] ?>  </span></li>
                     </ul>
                     <p><strong>Điều 2:</strong></p>
                     <ul style="list-style-type: circle;">
-                        <li><span>Giá tiền thuê phòng trọ là 1.500.000đ (Bằng chữ: Một triệu năm trăm ngàn đồng)</span></li>
-                        <li><span>Tiền thuê phòng trọ bên B thanh toán cho bên A từ ngày 30  dương lịch hàng tháng.</span></li>
-                        <li><span>Bên B đặt tiền thế chân trước 1.500.000đ (Bằng chữ : Một triệu năm trăm ngàn đồng) cho bên A. Tiền thế chân sẽ được trả
-                        </span></li><li><span>Bên B ngưng hợp đồng trước thời hạn thì phải chịu mất tiền thế chân.</span></li>
-                        <li><span>Bên A ngưng hợp đồng (lấy lại phòng trọ) trước thời hạn thì bồi thường gấp đôi số tiền bên B đã thế chân.</span></li>
+                        <li><span>Giá tiền thuê phòng trọ là <?php echo number_format($roomtDetail['giathue'], 0, ',', '.') ?>đ </span></li>
+                        <li><span>Tiền thuê phòng trọ bên B thanh toán cho bên A từ ngày 25 dương lịch hàng tháng.</span></li>
+                        <li><span>Bên B đặt tiền cọc trước <?php echo number_format($roomtDetail['tiencoc'], 0, ',', '.') ?>đ (Bằng chữ : Một triệu năm trăm ngàn đồng) cho bên A. Tiền cọc sẽ được trả khi hết hạn hợp đồng.
+                        </span></li><li><span>Trong trường hợp bên B ngưng hợp đồng trước thời hạn thì phải chịu mất tiền cọc.</span></li>
+                        <li><span>Bên A ngưng hợp đồng (lấy lại phòng trọ) trước thời hạn thì bồi thường gấp đôi số tiền bên B đã cọc.</span></li>
                     </ul>
                     <p><strong>Điều 3:</strong> Trách nhiệm bên A.</p>
                     <ul style="list-style-type: circle;">

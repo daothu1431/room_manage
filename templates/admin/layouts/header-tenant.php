@@ -43,6 +43,7 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
 
   <!-- CSS -->
   <link rel="stylesheet" href="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/css/style.css">
+  <!-- <link type="text/css" rel="stylesheet" href="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/css/auth.css?ver=<?php echo rand(); ?>"/> -->
 
   <!-- PHPExcel -->
 

@@ -3,9 +3,8 @@ $data = [
     'pageTitle' => 'Đổi mật khẩu'
 ];
 
-layout('header', 'admin', $data);
+layout('header-tenant', 'admin', $data);
 layout('sidebar', 'admin', $data);
-layout('breadcrumb', 'admin', $data);
 
 $userId = isLogin()['user_id'];
 $userDetail = getUserInfo($userId); 
@@ -43,26 +42,24 @@ if(isPost()) {
           $dataUpdate = [
               'password' => $passwordHash,
               'forget_token' => null,
-              'update_at' => date('Y-m-d H:i:s')
           ];
           $updateStatus = update('users', $dataUpdate, "id=$userId");
           if($updateStatus) {
-              setFlashData('msg', 'Thay đổi mật khẩu thành công, bạn có thể đăng nhập ngay bằng mật khẩu mới !');
-              setFlashData('msg_type', 'success');
-              redirect('?module=auth&action=logout');
+              setFlashData('msg', 'Thay đổi mật khẩu thành công');
+              setFlashData('msg_type', 'suc');
+              redirect('admin/?module=users&action=change_pass');
 
           }else {
               setFlashData('msg', 'Lỗi hệ thống, bạn không thể đổi mật khẩu');
-              setFlashData('msg_type', 'danger');
-              redirect('?module=users&action=change_pass');
+              setFlashData('msg_type', 'err');
+              redirect('/admin/?module=users&action=change_pass');
           }
 
     }else {
          // Có lỗi xảy ra
     setFlashData('msg', 'Vui lòng kiểm tra chính xác thông tin nhập vào');
-    setFlashData('msg_type', 'danger');
+    setFlashData('msg_type', 'err');
     setFlashData('errors', $errors);
-    // setFlashData('old', $body); 
     }
 
     
@@ -78,16 +75,15 @@ $errors = getFlashData('errors');
     <section class="content">
       <div class="container-fluid">
 
-            <?php
-
-                getMsg($msg, $msgType);
-            ?>
+         <div id="MessageFlash">
+            <?php getMsg($msg, $msgType);?> 
+        </div>
             <form action="" method="post">
              
                     <div class="col-6">
                         <div class="form-group">
                             <label for="password">Mật khẩu mới</label>
-                            <input type="password" name="password" id="password" class="form-control" value="">
+                            <input type="password" name="password" id="password" class="form-control"  value="">
                             <?php echo form_error('password', $errors, '<span class="error">', '</span>'); ?>
                         </div>
                     </div>               

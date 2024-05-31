@@ -106,7 +106,7 @@ $spreadsheet->getActiveSheet()->getStyle('A2:J2')->applyFromArray($tableHead);
 $spreadsheet->getActiveSheet()
             ->getStyle('E')
             ->getNumberFormat()
-            ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD);
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER);
 
 $spreadsheet->getActiveSheet()
             ->getStyle('F')

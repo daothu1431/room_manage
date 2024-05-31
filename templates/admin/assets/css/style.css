@@ -194,7 +194,7 @@ th {
     width: 100%;
     background: #fff;
     box-shadow: 0px 20px 60px 10px rgba(237, 237, 246, 0.1);
-    padding: 4px 30px;
+    padding: 0 30px;
     border-bottom: 1px solid #000;
     z-index: 9999;
 }
@@ -213,9 +213,10 @@ th {
 }
 
 .logo__image {
-    width: 150px;
+    width: 110px;
     height: 70px;
     border-radius: 12px;
+    object-fit: cover;
 }
 
 .logo__title {
@@ -756,3 +757,4 @@ th {
 .sumary-right {
     width: 40%;
 }
+
