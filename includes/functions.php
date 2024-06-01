@@ -359,3 +359,19 @@ function generateInvoiceCode($length = 5) {
     
     return $randomString;
 }
+
+function getContractStatus($endDate) {
+    $currentDate = new DateTime();
+    $contractEndDate = new DateTime($endDate);
+    $interval = $currentDate->diff($contractEndDate); // Tính khoảng cách giữa 2 ngày
+    $daysLeft = (int)$interval->format('%R%a'); // chuyển khoảng cách ngày thành số ngày
+
+    if ($daysLeft < 0) {
+        return "Đã hết hạn";
+    } elseif ($daysLeft > 0 && $daysLeft <= 30) {
+        return "Sắp hết hạn";
+    } else {
+        return "Trong thời hạn";
+    }
+}
+

@@ -375,6 +375,14 @@ th {
     border-radius: 8px;
 }
 
+.btn-kyhopdong-warning {
+    font-size: 10px;
+    padding: 6px 8px;
+    color: #fff;
+    background-color: #FE8F00;
+    border-radius: 8px;
+}
+
 .btn-kyhopdong-suc {
     font-size: 10px;
     padding: 6px 8px;

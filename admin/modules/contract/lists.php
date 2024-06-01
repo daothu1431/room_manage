@@ -22,30 +22,37 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
-
 // Xử lý lọc dữ liệu
 $filter = '';
 if (isGet()) {
     $body = getBody('get');
 
-    // Xử lý lọc Status theo trạng thái hợp đồng
-    if(!empty($body['status'])) {
-        $status = $body['status'];
+   // Xử lý lọc Status theo trạng thái hợp đồng
+if (!empty($body['status'])) {
+    $status = $body['status'];
 
-        if($status == 2) {
-            $statusSql = 0;
-        } else {
-            $statusSql = $status;
-        }
-
-        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
-            $operator = 'AND';
-        } else {
-            $operator = 'WHERE';
-        }
-        
-        $filter .= "$operator contract.trangthaihopdong=$statusSql";
+    if (!empty($filter) && strpos($filter, 'WHERE') !== false) {
+        $operator = 'AND';
+    } else {
+        $operator = 'WHERE';
     }
+
+    // Xử lý trạng thái "Trong thời hạn", "Đã hết hạn" và "Sắp hết hạn"
+    if ($status == 1) {
+        // Trong thời hạn: Hợp đồng có ngày kết thúc lớn hơn ngày hiện tại
+        $statusSql = "DATEDIFF(contract.ngayra, NOW()) > 30";
+        $filter .= "$operator $statusSql";
+    } elseif ($status == 2) {
+        // Đã hết hạn: Hợp đồng có ngày kết thúc nhỏ hơn hoặc bằng ngày hiện tại
+        $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 0";
+        $filter .= "$operator $statusSql";
+    } elseif ($status == 3) {
+        // Sắp hết hạn: Hợp đồng có ngày kết thúc trong vòng 30 ngày tới và lớn hơn ngày hiện tại
+        $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 30 AND DATEDIFF(contract.ngayra, NOW()) > 0";
+        $filter .= "$operator $statusSql";
+    }
+}
+
 
     // Xử lý lọc Status theo tình trạng cọc
     if(!empty($body['coc'])) {
@@ -67,10 +74,14 @@ if (isGet()) {
     }
 }
 
+
+
 /// Xử lý phân trang
 $allTenant = getRows("SELECT id FROM contract $filter");
 $perPage = _PER_PAGE; // Mỗi trang có 3 bản ghi
 $maxPage = ceil($allTenant / $perPage);
+
+
 
 // 3. Xử lý số trang dựa vào phương thức GET
 if(!empty(getBody()['page'])) {
@@ -86,6 +97,18 @@ $listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, t
 INNER JOIN room ON contract.room_id = room.id
 INNER JOIN tenant ON contract.tenant_id = tenant.id
 $filter LIMIT $offset, $perPage");
+
+
+// Danh sách các hợp đồng sắp hết hạn
+$expiringContracts = [];
+
+// Thêm các hợp đồng sắp hết hạn vào danh sách
+foreach ($listAllcontract as $contract) {
+    $daysUntilExpiration = getContractStatus($contract['thoihanhopdong']);
+    if ($daysUntilExpiration == "Sắp hết hạn") {
+        $expiringContracts[] = $contract;
+    }
+}
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -120,13 +143,21 @@ layout('navbar', 'admin', $data);
 ?>
 
 <div class="container-fluid">
-
         <div id="MessageFlash">          
                 <?php getMsg($msg, $msgType);?>          
         </div>
-
     <!-- Tìm kiếm -->
     <div class="box-content">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+         Các phòng sắp hết hạn hợp đồng: <strong>
+            <?php foreach($expiringContracts as $item){
+                echo $item['tenphong'].', ';
+            } ?>
+         </strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
             <!-- Tìm kiếm , Lọc dưz liệu -->
         <form action="" method="get">
             <div class="row">
@@ -136,6 +167,7 @@ layout('navbar', 'admin', $data);
                         <option value="">Chọn trạng thái hợp đồng</option>
                         <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Trong thời hạn</option>
                         <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
+                        <option value="3" <?php echo (!empty($status) && $status==3) ? 'selected':false; ?>>Sắp hết hạn</option>
                     </select>
                 </div>
             </div>
@@ -180,11 +212,11 @@ layout('navbar', 'admin', $data);
                         <th>Tổng thành viên</th>
                         <th>Giá thuê</th>
                         <th>Giá tiền cọc</th>
+                        <th>Trạng thái cọc</th>
                         <th>Chu kỳ thu</th>
                         <th>Ngày lập</th>
                         <th>Ngày vào ở</th>
                         <th>Thời hạn hợp đồng</th>
-                        <th>Trạng thái cọc</th>
                         <th>Tình trạng</th>
                         <th>Thao tác</th>
                     </tr>
@@ -195,7 +227,7 @@ layout('navbar', 'admin', $data);
                         if(!empty($listAllcontract)):
                             $count = 0; // Hiển thi số thứ tự
                             foreach($listAllcontract as $item):
-                                $count ++;      
+                                $count ++;  
                     ?>
 
                     <tr>
@@ -214,24 +246,24 @@ layout('navbar', 'admin', $data);
                         <td><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/user.svg" alt=""> <?php echo $item['soluongthanhvien'] ?> người</td>
                         <td><b><?php echo number_format($item['giathue'], 0, ',', '.') ?> đ</b></td>
                         <td><b><?php echo number_format($item['tiencoc'], 0, ',', '.') ?> đ</b></td>
+                        <td><?php echo $item['tinhtrangcoc'] == 0 ? '<span class="btn-kyhopdong-err">Chưa thu tiền</span>' : '<span class="btn-kyhopdong-suc">Đã thu tiền</span>' ?></td>
                         <td><?php echo $item['chuky'] ?> tháng</td>
                         <td><?php echo $item['ngaylaphopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngaylaphopdong'],'d-m-Y'); ?></td> 
                         <td><?php echo $item['ngayvaoo'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['ngayvaoo'],'d-m-Y'); ?></td> 
                         <td><?php echo $item['thoihanhopdong'] == '0000-00-00' ? 'Không xác định': getDateFormat($item['thoihanhopdong'],'d-m-Y'); ?></td> 
-                        <td><?php echo $item['tinhtrangcoc'] == 0 ? '<span class="btn-kyhopdong-err">Chưa thu tiền</span>' : '<span class="btn-kyhopdong-suc">Đã thu tiền</span>' ?></td>
                         <td>
                             <?php
-
-                                if($item['trangthaihopdong'] == 0) {
-                                    ?> <span class="btn-kyhopdong-err">Đã hết hạn</span> <?php
-                                }
-
-                                if($item['trangthaihopdong'] == 1) {
-                                    ?> <span class="btn-kyhopdong-suc">Trong thời hạn</span> <?php
-                                }
+                                $contractStatus = getContractStatus($item['thoihanhopdong']);
                                 
+                                if ($contractStatus == "Đã hết hạn") {
+                                    echo '<span class="btn-kyhopdong-err">' . $contractStatus . '</span>';
+                                } elseif ($contractStatus == "Trong thời hạn") {
+                                    echo '<span class="btn-kyhopdong-suc">' . $contractStatus . '</span>';
+                                } elseif ($contractStatus == "Sắp hết hạn") {
+                                    echo '<span class="btn-kyhopdong-warning">' . $contractStatus . '</span>';
+                                }
                             ?>
-                        </td>                
+                        </td>           
                         <td class="">
                             <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
                             <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('contract','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm" ><i class="fa fa-print"></i> </a>
