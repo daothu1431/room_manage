@@ -10,7 +10,7 @@ $userDetail = getUserInfo($userId);
 $grouId = $userDetail['group_id'];
 
 if($grouId != 7) {
-    setFlashData('msg', 'Bạn không được truy cập vào trang này');
+    setFlashData('msg', 'Trang bạn muốn truy cập không tồn tại');
     setFlashData('msg_type', 'err');
     redirect('admin/?module=');
 }

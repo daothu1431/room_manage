@@ -10,7 +10,7 @@ $userDetail = getUserInfo($userId);
 $grouId = $userDetail['group_id'];
 
 if($grouId != 7) {
-    setFlashData('msg', 'Bạn không được truy cập vào trang này');
+    setFlashData('msg', 'Trang bạn muốn truy cập không tồn tại');
     setFlashData('msg_type', 'err');
     redirect('admin/?module=');
 }
@@ -146,18 +146,21 @@ layout('navbar', 'admin', $data);
         <div id="MessageFlash">          
                 <?php getMsg($msg, $msgType);?>          
         </div>
-    <!-- Tìm kiếm -->
+
     <div class="box-content">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-         Các phòng sắp hết hạn hợp đồng: <strong>
-            <?php foreach($expiringContracts as $item){
-                echo $item['tenphong'].', ';
-            } ?>
-         </strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+        <?php if(!empty($expiringContracts)) { ?>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Các phòng sắp hết hạn hợp đồng: <strong>
+                <?php foreach($expiringContracts as $item){
+                    echo $item['tenphong'].', ';
+                } ?>
+                </strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php } ?>
             <!-- Tìm kiếm , Lọc dưz liệu -->
         <form action="" method="get">
             <div class="row">

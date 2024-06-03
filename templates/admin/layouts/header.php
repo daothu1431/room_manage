@@ -52,6 +52,10 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
     <!-- AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/98638255fc.js" crossorigin="anonymous"></script>
+
+    
   </head>
   <body class="hold-transition sidebar-mini layout-fixed">
 
@@ -68,7 +72,7 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
             </a>
 
             <div class="nav__list">
-                <a href="" class="nav__item">
+                <a href="<?php echo getLinkAdmin('users','account'); ?>" class="nav__item">
                   <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/baocao.svg" alt="">
                   <span>Tài khoản</span>
                 </a>

@@ -766,3 +766,72 @@ th {
     width: 40%;
 }
 
+.account-top {
+    width: 100%;
+    height: auto;
+    padding: 30px 40px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.account-bot {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.account-bot__left {
+    width: 35%;
+    height: 100px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.account-bot__right {
+    width: 70%;
+    height: auto;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.account-top__info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.account-avt {
+    width: 70px;
+    height: 70px;
+}
+
+.account-fullname {
+    font-weight: 600;
+    font-size: 20px;
+    color: #3f4254;
+}
+
+.account-name i {
+    margin-right: 6px;
+}
+
+.account-active {
+    color: #1bc5bd;
+}
+
+.account-bot__right {
+    padding: 20px 20px;
+}
+
+.account_action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accout-action_foget {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #3f4254;
+}

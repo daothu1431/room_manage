@@ -60,3 +60,22 @@
     </ul>
   </nav> -->
   <!-- /.navbar -->
+Hostname:
+localhost
+Database:
+oofgiaes_datn
+Username:
+oofgiaes_datn
+Password:
+eNG6NEUEdkjqRcSXx5rP
+
+const _HOST = 'localhost';
+const _USER = 'wnanmyvq_education_web_new';
+const _PASS = 'n7UfqfvVD373ffCBDvZE'; //Xampp => pass='';
+const _DB = 'wnanmyvq_education_web_new';
+const _DRIVER = 'mysql';
+
+define('_WEB_HOST_ROOT', 'https://'.$_SERVER['HTTP_HOST']); //Địa chỉ trang chủ
+
+twgo sref qhwk qyyy - mới (thu86065)
+lahzlzenxkvntgso (daothu3107)

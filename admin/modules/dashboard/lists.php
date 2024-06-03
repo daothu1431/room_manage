@@ -133,9 +133,33 @@ if($userDetail['group_id'] == 7) {
                                 <div class="content-left-icon background-icon">
                                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/st.svg" alt="">
                                 </div>
-                                <p class="total-desc">Đang cập nhật</p>
+                                <?php
+                                    $listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, tiencoc, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, zalo FROM contract 
+                                    INNER JOIN room ON contract.room_id = room.id
+                                    INNER JOIN tenant ON contract.tenant_id = tenant.id");
+                                    
+                                    
+                                    // Danh sách các hợp đồng sắp hết hạn
+                                    $expiringContracts = [];
+                                    
+                                    // Thêm các hợp đồng sắp hết hạn vào danh sách
+                                    $countContract = 0;
+                                    foreach ($listAllcontract as $contract) {
+                                        $daysUntilExpiration = getContractStatus($contract['thoihanhopdong']);
+                                        if ($daysUntilExpiration == "Sắp hết hạn") {
+                                            $expiringContracts[] = $contract;
+                                            $countContract++;
+                                        }
+                                    }
+                                    
+                                ?>
+                                <p class="total-desc">Số phòng sắp hết hạn hợp đồng</p>
                             </div>
-                            <p class="total-count">...</p>
+                            <?php 
+                                $ratio3 = ($countContract / $contractTotal) * 100; 
+                                $ratio3 = number_format($ratio3, 2);
+                            ?>
+                            <p class="total-count"><?php echo $countContract; ?><span style="font-size: 16px">(<?php echo $ratio3 ?>%)</span></p>
                             <a href=""><div class="dashboard-link"></div></a>
                         </div>
 
