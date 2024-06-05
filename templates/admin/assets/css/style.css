@@ -238,7 +238,7 @@ th {
     -webkit-box-align: center;
     align-items: center;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #1bc5bd;
     border-radius: 10px;
     margin: 10px 5px;
     font-size: 13px;
@@ -782,9 +782,10 @@ th {
 
 .account-bot__left {
     width: 35%;
-    height: 100px;
+    height: auto;
     background: #fff;
     border-radius: 8px;
+    overflow: hidden;
 }
 
 .account-bot__right {
@@ -834,4 +835,12 @@ th {
     font-size: 20px;
     font-weight: 600;
     color: #3f4254;
+}
+
+.bot-left_image {
+    width: 100%;
+}
+
+.form-account input:focus {
+    outline: none;
 }

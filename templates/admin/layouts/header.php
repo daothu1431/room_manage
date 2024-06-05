@@ -62,7 +62,7 @@ if(!isLogin()) { // Khi CSDL không còn dữ liệu trùng khớp thì tự đ�
     <header class="header">
         <div class="top-bar">
             <!-- Logo -->
-            <a href="<?php echo _WEB_HOST_ROOT.'/admin' ?>" class="logo">
+            <a href="<?php echo _WEB_HOST_ROOT.'?module=dashboard' ?>" class="logo">
               <img
                   src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png"
                   alt=""

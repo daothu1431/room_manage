@@ -13,7 +13,7 @@
  <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?php echo _WEB_HOST_ROOT_ADMIN.'/?module='; ?>" class="brand-link">
+    <a href="<?php echo _WEB_HOST_ROOT.'/?module=dashboard'; ?>" class="brand-link">
       <span class="brand-text font-weight-light text-uppercase">Motel</span>
     </a>
 
@@ -33,7 +33,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="<?php echo  _WEB_HOST_ROOT_ADMIN.'/?module=' ?>" class="nav-link  <?php echo (activeMenuSidebar('')) ? 'active':false;  ?>">
+            <a href="<?php echo  _WEB_HOST_ROOT.'/?module=dashboard' ?>" class="nav-link  <?php echo (activeMenuSidebar('')) ? 'active':false;  ?>">
               <i class="nav-icon fas fa-home"></i>
               <p>
                 Tổng quan

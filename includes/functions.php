@@ -228,37 +228,12 @@ function isLogin(){
     return $checkLogin;
 }
 
-//Kiểm tra trạng thái đăng nhập của Học viên
-function isLoginStudent(){
-    $checkLogin = false;
-    if (getSession('student_loginToken')){
-        $tokenLogin = getSession('student_loginToken');
-
-        $queryToken = firstRaw("SELECT student_id FROM student_logintoken WHERE token='$tokenLogin'");
-
-        if (!empty($queryToken)){
-            //$checkLogin = true;
-            $checkLogin = $queryToken;
-        }else{
-            removeSession('student_loginToken');
-        }
-    }
-
-    return $checkLogin;
-}
-
-
 //Lấy thông tin user
 function getUserInfo($user_id){
     $info = firstRaw("SELECT * FROM users WHERE id=$user_id");
     return $info;
 }
 
-//Lấy thông tin Học viên
-function Student_Info($student_id){
-    $info = firstRaw("SELECT * FROM student WHERE id=$student_id");
-    return $info;
-}
 
 // activeMenuSidebar
 function activeMenuSidebar($module) {
@@ -268,23 +243,8 @@ function activeMenuSidebar($module) {
    return false;
 }
 
-
 // GetLink
 function getLinkAdmin($module, $action='', $param= []) {
-    $url = _WEB_HOST_ROOT_ADMIN;
-    $url = $url.'?module='.$module;
-    if(!empty($action)) {
-        $url = $url.'&action='.$action;
-    }
-
-    if(!empty($param)) {
-        $paramString = http_build_query($param);
-        $url = $url.'&'.$paramString;
-    }
-    return $url;
-}
-
-function getLinkClient($module, $action='', $param= []) {
     $url = _WEB_HOST_ROOT;
     $url = $url.'?module='.$module;
     if(!empty($action)) {
@@ -297,7 +257,6 @@ function getLinkClient($module, $action='', $param= []) {
     }
     return $url;
 }
-
 
 // Format Date
 function getDateFormat($strDate, $format) {
@@ -315,7 +274,6 @@ function isFontIcon($input) {
     }
     return false;
 }
-
 
 // Hàm kiểm tra trang hiện tại có phải trrang admin không
 function isAdmin() {
