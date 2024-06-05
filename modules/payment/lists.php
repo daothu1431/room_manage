@@ -10,35 +10,31 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
+$allSpend = getRaw("SELECT id, tendanhmuc FROM category_spend");
 // Xử lý lọc dữ liệu
 $filter = '';
+$spendId = null;
 if (isGet()) {
     $body = getBody('get');
 
-    //Xử lý lọc Status
-    if(!empty($body['status'])) {
-        $status = $body['status'];
+    // Xử lý lọc theo danh mục chi
+    if (!empty($body['payment_id'])) {
+        $spendId = $body['payment_id'];
 
-        if($status == 2) {
-            $statusSql = 0;
-        } else {
-            $statusSql = $status;
-        }
-
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if (!empty($filter) && strpos($filter, 'WHERE') !== false) {
             $operator = 'AND';
-        }else {
+        } else {
             $operator = 'WHERE';
         }
-        
-        $filter .= "$operator contract.trangthaihopdong=$statusSql";
+
+        $filter .= " $operator payment.danhmucchi_id = $spendId";
     }
 }
 
 /// Xử lý phân trang
-$allTenant = getRows("SELECT id FROM contract $filter");
+$allPayment = getRows("SELECT id FROM payment $filter");
 $perPage = _PER_PAGE; // Mỗi trang có 3 bản ghi
-$maxPage = ceil($allTenant / $perPage);
+$maxPage = ceil($allPayment / $perPage);
 
 // 3. Xử lý số trang dựa vào phương thức GET
 if(!empty(getBody()['page'])) {
@@ -82,26 +78,33 @@ layout('navbar', 'admin', $data);
 
     <!-- Tìm kiếm -->
     <div class="box-content">
-            <!-- Tìm kiếm , Lọc dưz liệu -->
         <form action="" method="get">
             <div class="row">
-            <div class="col-3">
-                <div class="form-group">
-                    <select name="status" id="" class="form-select">
-                        <option value="">Chọn trạng thái</option>
-                        <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Trong thời hạn</option>
-                        <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
-                    </select>
+                <div class="col-3">
+                        <div class="form-group">
+                            <select name="payment_id" id="" class="form-select">
+                                <option value="">Chọn danh mục chi</option>
+                            <?php
+
+                                if(!empty($allSpend)) {
+                                    foreach($allSpend as $item) {
+                                ?>
+                                    <option value="<?php echo $item['id'] ?>" <?php  echo (!empty($spendId) && $spendId == $item['id'])?'selected':false; ?>><?php echo $item['tendanhmuc'] ?></option> 
+                                
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                </div>
+
+                <div class="col">
+                        <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
                 </div>
             </div>
-
-            <div class="col">
-                    <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
-            </div>
-            </div>
-            <input type="hidden" name="module" value="contract">
-        </form>
-
+            <input type="hidden" name="module" value="payment">
+        </form> 
         <form action="" method="POST" class="mt-3">
     <div>
   

@@ -22,10 +22,7 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
-
-
 // Xử lý lọc dữ liệu
-// $allRoom = getRaw("SELECT id, tenphong, soluong, trangthai FROM room ORDER BY tenphong");
 $filter = '';
 if (isGet()) {
     $body = getBody('get');

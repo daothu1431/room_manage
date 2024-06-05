@@ -10,35 +10,32 @@ $data = [
 layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
+$allCollect = getRaw("SELECT id, tendanhmuc FROM category_collect");
+
 // Xử lý lọc dữ liệu
 $filter = '';
+$collectId = null;
 if (isGet()) {
     $body = getBody('get');
 
-    //Xử lý lọc Status
-    if(!empty($body['status'])) {
-        $status = $body['status'];
+    // Xử lý lọc theo groups
+    if (!empty($body['collect_id'])) {
+        $collectId = $body['collect_id'];
 
-        if($status == 2) {
-            $statusSql = 0;
-        } else {
-            $statusSql = $status;
-        }
-
-        if(!empty($filter) && strpos($filter, 'WHERE') >= 0) {
+        if (!empty($filter) && strpos($filter, 'WHERE') >= 0) {
             $operator = 'AND';
-        }else {
+        } else {
             $operator = 'WHERE';
         }
-        
-        $filter .= "$operator contract.trangthaihopdong=$statusSql";
+
+        $filter .= " $operator receipt.danhmucthu_id = $collectId";
     }
 }
 
 /// Xử lý phân trang
-$allTenant = getRows("SELECT id FROM contract $filter");
+$allReceipt = getRows("SELECT id FROM receipt $filter");
 $perPage = _PER_PAGE; // Mỗi trang có 3 bản ghi
-$maxPage = ceil($allTenant / $perPage);
+$maxPage = ceil($allReceipt / $perPage);
 
 // 3. Xử lý số trang dựa vào phương thức GET
 if(!empty(getBody()['page'])) {
@@ -76,9 +73,6 @@ if(isset($_POST['deleteMultip'])) {
         redirect('?module=contract');
 }
 
-
-
-
 $msg =getFlashData('msg');
 $msgType = getFlashData('msg_type');
 $errors = getFlashData('errors');
@@ -97,29 +91,35 @@ layout('navbar', 'admin', $data);
 
     <!-- Tìm kiếm -->
     <div class="box-content">
-            <!-- Tìm kiếm , Lọc dưz liệu -->
         <form action="" method="get">
             <div class="row">
             <div class="col-3">
-                <div class="form-group">
-                    <select name="status" id="" class="form-select">
-                        <option value="">Chọn trạng thái</option>
-                        <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Trong thời hạn</option>
-                        <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Đã hết hạn</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <select name="collect_id" id="" class="form-select">
+                            <option value="">Chọn danh mục thu</option>
+                        <?php
+
+                            if(!empty($allCollect)) {
+                                foreach($allCollect as $item) {
+                            ?>
+                                <option value="<?php echo $item['id'] ?>" <?php  echo (!empty($collectId) && $collectId == $item['id'])?'selected':false; ?>><?php echo $item['tendanhmuc'] ?></option> 
+                            
+                            <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
             </div>
 
             <div class="col">
                     <button style="height: 50px; width: 50px" type="submit" class="btn btn-success"> <i class="fa fa-search"></i></button>
             </div>
             </div>
-            <input type="hidden" name="module" value="contract">
-        </form>
-
+            <input type="hidden" name="module" value="receipt">
+        </form> 
         <form action="" method="POST" class="mt-3">
     <div>
-  
 </div>
             <a href="<?php echo getLinkAdmin('receipt', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
             <a href="<?php echo getLinkAdmin('receipt'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
