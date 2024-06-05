@@ -38,6 +38,7 @@ if (isPost()){
                 //Thiết lập gửi email
                 $subject = 'Yêu cầu khôi phục mật khẩu';
                 $content = 'Chào bạn: '.$email.'<br />';
+                $content .= '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy44watK2ehyuX6N1dHDeHtq_ZfHKtDhtSYA&s" />'.'<br />';
                 $content .= 'Chúng tôi nhận được yêu cầu khôi phục mật khẩu từ bạn. Vui lòng click vào link sau để khôi phục'.'<br />';
                 $content .= $link.'<br />';
                 $content .= 'Trân trọng !';
@@ -45,7 +46,7 @@ if (isPost()){
                 //Tiến hành gửi email
                 $senStatus = sendMail($email, $subject, $content);
                 if (!empty($senStatus)){
-                    setFlashData('msg', 'Vui lòng kiểm tra email !');
+                    setFlashData('msg', 'Mời bạn vui lòng kiểm tra email !');
                     setFlashData('msg_type', 'suc');
                 }
             }
@@ -72,7 +73,7 @@ $old = getFlashData('old');
     <div class="col-3" style="margin: 20px auto;">
         <div class="login">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/logo-final.png" class="logo-login" alt="">
-        <p class="text-center title-login">ĐỔI MẬT KHẨU</p>
+        <p class="text-center title-login">FORGOT PASSWORD</p>
         <p class="text-center" style="color: #000; margin-bottom: 20px">Hệ thống quản lý phòng trọ cho thuê</p>
 
 

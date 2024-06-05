@@ -46,19 +46,19 @@ if (isPost()){
                 }
 
             }else{
-                setFlashData('msg', '** Mật khẩu không chính xác!');
+                setFlashData('msg', 'Mật khẩu bạn điền không chính xác!');
                 setFlashData('msg_type', 'err');
                 setFlashData('old', $body);
                
             }
         }else{
-            setFlashData('msg', '** Email chưa được kích hoạt!');
+            setFlashData('msg', 'Email chưa được kích hoạt trong hệ thống!');
             setFlashData('msg_type', 'err');
             setFlashData('old', $body);
            
         }
     }else{
-        setFlashData('msg', '** Vui lòng kiểm tra email và mật khẩu!');
+        setFlashData('msg', 'Vui lòng kiểm tra email và mật khẩu!');
         setFlashData('msg_type', 'err');
         setFlashData('old', $body);
        
@@ -104,5 +104,5 @@ $old = getFlashData('old');
 
 <?php
 
-layout('footer-login');
+layout('footer-login', 'admin');
 
