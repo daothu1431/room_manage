@@ -39,7 +39,6 @@ if(isset($_POST['save_excel_data'])) {
                     'nghenghiep' => $nghenghiep,
                     'cmnd' => $cmnd,
                     'ngaycap' => $ngaycap,
-                    'zalo' => $zalo,
                 ];
                 
                 $insertStatus = insert('tenant', $dataInsert);

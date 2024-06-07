@@ -92,12 +92,17 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 // Xóa hết
 if(isset($_POST['deleteMultip'])) {
     $numberCheckbox = $_POST['records'];
+    if(empty($numberCheckbox)) {
+        setFlashData('msg', 'Bạn chưa chọn mục nào để xóa!');
+        setFlashData('msg_type', 'err');
+    } else {
         $extract_id = implode(',', $numberCheckbox);
         $checkDelete = delete('room', "id IN($extract_id)");
         if($checkDelete) {
             setFlashData('msg', 'Xóa thông tin phòng trọ thành công');
             setFlashData('msg_type', 'suc');
         }
+    }
         redirect('?module=room');
 }
 
