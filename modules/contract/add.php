@@ -12,8 +12,8 @@ layout('header', 'admin', $data);
 layout('breadcrumb', 'admin', $data);
 
 $allRoom = getRaw("SELECT id, tenphong, soluong FROM room ORDER BY tenphong");
-// $allTenant = getRaw("SELECT *, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
 $allTenant = getRaw("SELECT tenant.id, tenant.tenkhach, room.tenphong FROM tenant INNER JOIN room ON room.id = tenant.room_id ORDER BY tenphong");
+$allRoomId = getRaw("SELECT room_id FROM contract");
 
 // Xử lý thêm hợp đồng
 if(isPost()) {
@@ -24,6 +24,15 @@ if(isPost()) {
     //Valide họ tên: Bắt buộc phải nhập, >=5 ký tự
     if(empty(trim($body['room_id']))) {
         $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập hợp đồng!';
+    } else{
+        // Kiểm tra trùng phòng lập hợp đồng
+        $dataRoom = trim($body['room_id']);
+        foreach ($allRoomId as $item) {
+            if ($dataRoom == $item['room_id']) {
+                $errors['room_id']['exists'] = '** Phòng này đã lập hợp đồng';
+                break;
+            }
+        }
     }
     if(empty(trim($body['tenant_id']))) {
         $errors['tenant_id']['required'] = '** Bạn chưa chọn người đại diện!';

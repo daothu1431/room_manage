@@ -215,8 +215,8 @@ layout('navbar', 'admin', $data);
                         </td>
                         <td><?php echo $item['cmnd'] ?></td>
                         <td><?php echo $item['ngaycap'] ?></td>
-                        <td ><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'"  width=70 height=50/>' ?></td>
-                        <td><?php echo (isFontIcon($item['anhmatsau']))?$item['anhmatsau']:'<img src="'.$item['anhmatsau'].'" width=70 height=50/>' ?></td>
+                        <td ><a href="<?php echo getLinkAdmin('tenant','view-pre',['id' => $item['id']]); ?>" target="_blank"><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'"  width=70 height=50/>' ?></a></td>
+                        <td ><a href="<?php echo getLinkAdmin('tenant','view-after',['id' => $item['id']]); ?>" target="_blank"><?php echo (isFontIcon($item['anhmatsau']))?$item['anhmatsau']:'<img src="'.$item['anhmatsau'].'"  width=70 height=50/>' ?></a></td>
                         <td><p class="btn btn-info btn-sm" style="color: #fff; font-size: 12px"><?php echo $item['tenphong'] ?></p></td>
 
                         <td class="">

@@ -167,9 +167,10 @@ if($userDetail['group_id'] == 7) {
                                 <div class="content-left-icon background-icon">
                                     <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/st.svg" alt="">
                                 </div>
-                                <p class="total-desc">Đang cập nhật</p>
+                                <p class="total-desc">Tổng số người dùng hệ thống</p>
                             </div>
-                            <p class="total-count">...</p>
+                            <?php $allUsers = getRows("SELECT id FROM users") ?>
+                            <p class="total-count"><?php echo $allUsers ?></p>
                         </div>
                         
                 </div>

@@ -27,53 +27,48 @@ $filter = '';
 if (isGet()) {
     $body = getBody('get');
 
-   // Xử lý lọc Status theo trạng thái hợp đồng
-if (!empty($body['status'])) {
-    $status = $body['status'];
+    // Mảng để lưu trữ các điều kiện lọc
+    $filterConditions = [];
 
-    if (!empty($filter) && strpos($filter, 'WHERE') !== false) {
-        $operator = 'AND';
-    } else {
-        $operator = 'WHERE';
+    // Xử lý lọc Status theo trạng thái hợp đồng
+    if (!empty($body['status'])) {
+        $status = $body['status'];
+
+        // Xử lý trạng thái "Trong thời hạn", "Đã hết hạn" và "Sắp hết hạn"
+        if ($status == 1) {
+            // Trong thời hạn: Hợp đồng có ngày kết thúc lớn hơn ngày hiện tại
+            $statusSql = "DATEDIFF(contract.ngayra, NOW()) > 30";
+        } elseif ($status == 2) {
+            // Đã hết hạn: Hợp đồng có ngày kết thúc nhỏ hơn hoặc bằng ngày hiện tại
+            $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 0";
+        } elseif ($status == 3) {
+            // Sắp hết hạn: Hợp đồng có ngày kết thúc trong vòng 30 ngày tới và lớn hơn ngày hiện tại
+            $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 30 AND DATEDIFF(contract.ngayra, NOW()) > 0";
+        }
+
+        // Thêm điều kiện vào mảng
+        $filterConditions[] = $statusSql;
     }
-
-    // Xử lý trạng thái "Trong thời hạn", "Đã hết hạn" và "Sắp hết hạn"
-    if ($status == 1) {
-        // Trong thời hạn: Hợp đồng có ngày kết thúc lớn hơn ngày hiện tại
-        $statusSql = "DATEDIFF(contract.ngayra, NOW()) > 30";
-        $filter .= "$operator $statusSql";
-    } elseif ($status == 2) {
-        // Đã hết hạn: Hợp đồng có ngày kết thúc nhỏ hơn hoặc bằng ngày hiện tại
-        $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 0";
-        $filter .= "$operator $statusSql";
-    } elseif ($status == 3) {
-        // Sắp hết hạn: Hợp đồng có ngày kết thúc trong vòng 30 ngày tới và lớn hơn ngày hiện tại
-        $statusSql = "DATEDIFF(contract.ngayra, NOW()) <= 30 AND DATEDIFF(contract.ngayra, NOW()) > 0";
-        $filter .= "$operator $statusSql";
-    }
-}
-
 
     // Xử lý lọc Status theo tình trạng cọc
-    if(!empty($body['coc'])) {
+    if (!empty($body['coc'])) {
         $status2 = $body['coc'];
 
-        if($status2 == 2) {
-            $statusSql2 = 0;
+        if ($status2 == 2) {
+            $statusSql2 = "tinhtrangcoc=0";
         } else {
-            $statusSql2 = $status2;
+            $statusSql2 = "tinhtrangcoc=$status2";
         }
 
-        if(!empty($filter) && strpos($filter, 'WHERE') !== false) {
-            $operator = 'AND';
-        } else {
-            $operator = 'WHERE';
-        }
-        
-        $filter .= "$operator tinhtrangcoc=$statusSql2";
+        // Thêm điều kiện vào mảng
+        $filterConditions[] = $statusSql2;
+    }
+
+    // Kết hợp các điều kiện thành một chuỗi SQL
+    if (!empty($filterConditions)) {
+        $filter = 'WHERE ' . implode(' AND ', $filterConditions);
     }
 }
-
 
 
 /// Xử lý phân trang
@@ -93,7 +88,7 @@ if(!empty(getBody()['page'])) {
     $page = 1;
 }
 $offset = ($page - 1) * $perPage;
-$listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, tiencoc, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, zalo FROM contract 
+$listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, tiencoc, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, zalo, tinhtrangcoc FROM contract 
 INNER JOIN room ON contract.room_id = room.id
 INNER JOIN tenant ON contract.tenant_id = tenant.id
 $filter LIMIT $offset, $perPage");
