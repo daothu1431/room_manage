@@ -133,7 +133,6 @@ layout('navbar', 'admin', $data);
                     </div>
 
                 <!-- Hàng 2 -->
-
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
@@ -222,7 +221,7 @@ layout('navbar', 'admin', $data);
                         </div>
                         <div class="water">
                             <div class="form-group">
-                                <label for="nocu">Nợ cũ</label>
+                                <label for="nocu">Cộng thêm</label>
                                 <input type="text" class="form-control" id="nocu" name="nocu" >
                              </div>
                         </div>

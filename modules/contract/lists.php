@@ -263,13 +263,19 @@ layout('navbar', 'admin', $data);
                             ?>
                         </td>           
                         <td class="">
-                            <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
-                            <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('contract','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm" ><i class="fa fa-print"></i> </a>
-                            <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
-                            <a href="<?php echo getLinkAdmin('contract','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm" ><i class="fa fa-edit"></i> </a>
-                            <a href="<?php echo getLinkAdmin('contract','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
-                        </td>                
-                         
+                            <div class="action">
+                                <button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-ellipsis-v"></i></button>
+                                <div class="box-action">
+                                    <!-- Add your actions here -->
+                                    <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-solid fa-eye"></i></a>
+                                    <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('contract','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm"><i class="fa fa-print"></i></a>
+                                    <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
+                                    <a href="<?php echo getLinkAdmin('contract','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                    <a href="<?php echo getLinkAdmin('contract','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                                          
                     <?php endforeach; else: ?>
                         <tr>
                             <td colspan="15">
@@ -323,6 +329,44 @@ layout('footer', 'admin');
 ?>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+        // Select all action buttons
+        const actionButtons = document.querySelectorAll('.action');
+
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                // Prevent event bubbling
+                event.stopPropagation();
+                
+                // Toggle the active class
+                button.classList.toggle('active');
+                
+                // Hide all other .box-action elements
+                actionButtons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Hide .box-action when clicking outside
+        document.addEventListener('click', function(event) {
+            actionButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+        });
+
+        // Prevent .box-action click from closing itself
+        const boxActions = document.querySelectorAll('.box-action');
+        boxActions.forEach(box => {
+            box.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    });
+    
     function toggle(__this){
        let isChecked = __this.checked;
        let checkbox = document.querySelectorAll('input[name="records[]"]');

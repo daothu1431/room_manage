@@ -63,7 +63,10 @@ if (isGet()) {
 
         if($status == 2) {
             $statusSql = 0;
-        } else {
+        } elseif($status == 3) {
+            $statusSql = 2;
+        }
+        else {
             $statusSql = $status;
         }
 
@@ -132,6 +135,7 @@ layout('navbar', 'admin', $data);
                             <option value="">Chọn trạng thái</option>
                             <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Đã thu</option>
                             <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Chưa thu</option>
+                            <option value="3" <?php echo (!empty($status) && $status==3) ? 'selected':false; ?>>Đang nợ tiền</option>
                         </select>
                     </div>
                 </div>
@@ -170,8 +174,10 @@ layout('navbar', 'admin', $data);
                         <th colspan="3">Tiền nước (20.000đ)</th>
                         <th colspan="2">Tiền rác (10.000đ)</th>
                         <th colspan="2">Tiền Wifi (50.000đ)</th>
-                        <th rowspan="2">Nợ cũ</th>
+                        <th width="3%" rowspan="2">Cộng thêm</th>
                         <th rowspan="2">Tổng cộng</th>
+                        <th rowspan="2">Còn nợ</th>
+                        <th rowspan="2">Ngày lập</th>
                         <th rowspan="2">Trạng thái</th>
                         <th rowspan="2">Thao tác</th>
                     </tr>
@@ -221,25 +227,49 @@ layout('navbar', 'admin', $data);
                         <td><?php echo $item['chuky']; ?></td>
                         <td><b><?php echo number_format($item['tienmang'], 0, ',', '.') ?> đ</b></td>
                         <td><b><?php echo number_format($item['nocu'], 0, ',', '.') ?> đ</b></td>
-                        <td style="color: #db2828"><b><?php echo number_format($item['tongtien'], 0, ',', '.') ?> đ</b></td>
+                        <td style="color: #ed6004">
+                            <b><?php echo number_format($item['tongtien'], 0, ',', '.') ?> đ</b> <br />
+                            <i style="color: #000">Số tiền đã trả</i><br />
+                            <b style="color: #15a05c"><?php echo number_format($item['sotiendatra'], 0, ',', '.') ?> đ</b>
+                        </td>
+                        <td style="color: #db2828"><b><?php echo number_format($item['sotienconthieu'], 0, ',', '.') ?> đ</b></td>
+                        <td><?php echo $item['create_at'] ?></td>
                         <td>
                             <?php 
-                                 echo $item['trangthaihoadon'] == 1 ? '<span class="btn-kyhopdong-suc">Đã thu</span>':'<span class="btn-kyhopdong-err">Chưa thu</span>';
+                                 if($item['trangthaihoadon'] == 1) {
+                                    echo '<span class="btn-kyhopdong-suc">Đã thu</span>';
+                                 } elseif($item['trangthaihoadon'] == 0) {
+                                    echo '<span class="btn-kyhopdong-warning">Chưa thu</span>';
+                                 } else {
+                                    echo '<span class="btn-kyhopdong-err">Đang nợ tiền</span>';
+                                 }
                             ?>
                         </td>
                         
-                        <td>
-                            <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" class="small"></a>
-                            <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('bill','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm small" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
-                            <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('bill','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm small" ><i class="fa fa-print"></i> </a>
-                            <a href="<?php echo getLinkAdmin('bill','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm small" ><i class="fa fa-edit"></i> </a>
-                            <a href="<?php echo getLinkAdmin('bill','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm small" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
+                        <td class="">
+                            <div class="action">
+                                <button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-ellipsis-v"></i></button>
+                                <div class="box-action">
+                                    <!-- Add your actions here -->
+                                    <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" class="small"></a>
+                                    <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('bill','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm small" ><i class="nav-icon fas fa-solid fa-eye"></i> </a>
+                                    <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('bill','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm small" ><i class="fa fa-print"></i> </a>
+                                    <?php
+                                        if($item['trangthaihoadon'] != 1) {
+                                            ?>
+                                                <a href="<?php echo getLinkAdmin('bill','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm small" ><i class="fa fa-edit"></i> </a>
+                                            <?php
+                                        }
+                                     ?>
+                                    <a href="<?php echo getLinkAdmin('bill','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm small" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i> </a>
+                                </div>
+                            </div>
                         </td>
                     </tr>                
                          
                     <?php endforeach; else: ?>
                         <tr>
-                            <td colspan="19">
+                            <td colspan="21">
                                 <div class="alert alert-danger text-center">Không có dữ liệu hóa đơn</div>
                             </td>
                         </tr>
@@ -290,6 +320,43 @@ layout('footer', 'admin');
 ?>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select all action buttons
+        const actionButtons = document.querySelectorAll('.action');
+
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                // Prevent event bubbling
+                event.stopPropagation();
+                
+                // Toggle the active class
+                button.classList.toggle('active');
+                
+                // Hide all other .box-action elements
+                actionButtons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Hide .box-action when clicking outside
+        document.addEventListener('click', function(event) {
+            actionButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+        });
+
+        // Prevent .box-action click from closing itself
+        const boxActions = document.querySelectorAll('.box-action');
+        boxActions.forEach(box => {
+            box.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    });
+
     function toggle(__this){
        let isChecked = __this.checked;
        let checkbox = document.querySelectorAll('input[name="records[]"]');
@@ -297,15 +364,4 @@ layout('footer', 'admin');
             checkbox[index].checked = isChecked
         }
     }
-
-    const btnShow = document.getElementById('btnShow');
-    const divShow = document.getElementById('divShow');
-
-    btnShow.addEventListener('click', function() {
-        if (divShow.style.display === 'none' || divShow.style.display === '') {
-            divShow.style.display = 'block';
-        } else {
-            divShow.style.display = 'none';
-        }
-    });
 </script>

@@ -62,6 +62,8 @@ if(isPost()) {
         'tienmang' => $body['tienmang'],
         'nocu' => $body['nocu'],
         'tongtien' => $body['tongtien'],
+        'sotiendatra' => $body['sotiendatra'],
+        'sotienconthieu' => $body['sotienconthieu'],
         'trangthaihoadon' => $body['trangthaihoadon'],
     ];
 
@@ -247,20 +249,35 @@ layout('navbar', 'admin', $data);
                 
                 <!-- Hàng 4 -->
                 <div class="row">
-                    <div class="col-5">
+                    <div class="col-3">
                         <div class="form-group">
                             <label for="tongtien">Tổng tiền</label>
                             <input value="<?php echo old('tongtien', $old); ?>" type="text" class="form-control" id="tongtien" name="tongtien" >
                         </div>
                     </div>
 
-                    <div class="col-5">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="tongtien">Đã thanh toán</label>
+                            <input value="<?php echo old('sotiendatra', $old); ?>" type="text" class="form-control" id="sotiendatra" name="sotiendatra" oninput="formatCurrency(this)">
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="tongtien">Còn nợ</label>
+                            <input value="<?php echo old('sotienconthieu', $old); ?>" type="text" class="form-control" id="sotienconthieu" name="sotienconthieu" >
+                        </div>
+                    </div>
+
+                    <div class="col-3">
                         <div class="form-group">
                             <label for="">Tình trạng thu tiền</label>
                             <select name="trangthaihoadon" class="form-select">
                                 <option value="">Chọn trạng thái</option>                               
                                 <option value="0" <?php if($billDetail['trangthaihoadon'] == 0) echo 'selected' ?> >Chưa thanh toán</option>
                                 <option value="1" <?php if($billDetail['trangthaihoadon'] == 1) echo 'selected' ?>>Đã thanh toán</option>
+                                <option value="2" <?php if($billDetail['trangthaihoadon'] == 2) echo 'selected' ?>>Đang nợ tiền</option>
                             </select>
                         </div>
                     </div>
@@ -410,6 +427,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('tongtien').value = numberWithCommas(tongtien) + ' đ';
     }
 
+    document.getElementById('sotiendatra').addEventListener('input', function() {
+    // Lấy giá trị tổng tiền từ ô nhập
+    var tongtien = parseFloat(document.getElementById('tongtien').value.replace(/,/g, '').replace(' đ', '')) || 0;
+    // Lấy giá trị số tiền đã trả từ ô nhập
+    var sotiendatra = parseFloat(document.getElementById('sotiendatra').value.replace(/,/g, '').replace(' đ', '')) || 0;
+    // Tính toán số tiền còn nợ
+    var sotienconthieu = tongtien - sotiendatra;
+    // Hiển thị số tiền còn nợ
+    document.getElementById('sotienconthieu').value = numberWithCommas(sotienconthieu) + ' đ';
+});
+
+
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -441,6 +470,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('tienmang').value = removeCommas(document.getElementById('tienmang').value);
         document.getElementById('nocu').value = removeCommas(document.getElementById('nocu').value);
         document.getElementById('tongtien').value = removeCommas(document.getElementById('tongtien').value);
+        document.getElementById('sotiendatra').value = removeCommas(document.getElementById('sotiendatra').value);
+        document.getElementById('sotienconthieu').value = removeCommas(document.getElementById('sotienconthieu').value);
     });
 
     updateRoomDetails();

@@ -99,12 +99,17 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 // Xóa hết
 if(isset($_POST['deleteMultip'])) {
     $numberCheckbox = $_POST['records'];
+    if(empty($numberCheckbox)) {
+        setFlashData('msg', 'Bạn chưa chọn mục nào để xóa!');
+        setFlashData('msg_type', 'err');
+    } else {
         $extract_id = implode(',', $numberCheckbox);
         $checkDelete = delete('users', "id IN($extract_id)");
         if($checkDelete) {
             setFlashData('msg', 'Xóa thông tin người dùng thành công');
             setFlashData('msg_type', 'suc');
         }
+    }
         redirect('?module=users');
 }
 
@@ -173,6 +178,7 @@ layout('navbar', 'admin', $data);
 </div>
             <a href="<?php echo getLinkAdmin('users', 'add') ?>" class="btn btn-success" style="color: #fff"><i class="fa fa-plus"></i> Thêm</a>
             <a href="<?php echo getLinkAdmin('users', 'lists'); ?>" class="btn btn-secondary"><i class="fa fa-history"></i> Refresh</a>
+            <button type="submit" name="deleteMultip" value="Delete" onclick="return confirm('Bạn có chắn chắn muốn xóa không ?')" class="btn btn-danger"><i class="fa fa-trash"></i> Xóa</button>
 
             <table class="table table-bordered mt-3" id="dataTable">
                 <thead>

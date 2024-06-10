@@ -13,6 +13,7 @@ layout('breadcrumb', 'admin', $data);
 // Truy vấn lấy ra danh sách nhóm
 $allGroups = getRaw("SELECT id, name FROM groups ORDER BY id");
 $allRoom = getRaw("SELECT id, tenphong, soluong FROM room ORDER BY tenphong");
+$allEmail = getRaw("SELECT email FROM users");
 
 // Xử lý thêm người dùng
 if(isPost()) {
@@ -28,6 +29,14 @@ if(isPost()) {
     // Validate email
     if(empty(trim($body['email']))) {
         $errors['email']['required'] = '** Bạn chưa nhập email';
+    } else {
+        $dataEmail = $body['email'];
+        foreach($allEmail as $item) {
+            if($dataEmail == $item['email']) {
+                $errors['email']['exits'] = '** Email này đã có người sử dụng';
+                break;
+            }
+        }
     }
 
     // Validate password

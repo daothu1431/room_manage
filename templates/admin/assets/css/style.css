@@ -83,7 +83,7 @@ tbody tr {
 }
 
 tbody tr td {
-    font-size: 13px;
+    font-size: 11px;
     color: #000;
 }
 
@@ -307,9 +307,10 @@ th {
 }
 
 .box-content {
+    overflow-y: auto;
     margin-top: 15px;
     width: auto;
-    height: auto;
+    height: 60vh;
     background: #fff;
     border-radius: 15px;
     padding: 20px 20px;
@@ -844,3 +845,31 @@ th {
 .form-account input:focus {
     outline: none;
 }
+
+.action {
+    display: flex;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer; 
+}
+
+.box-action {
+    position: absolute;
+    width: 200px;
+    padding: 20px 10px;
+    display: none;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 1px 1px 8px #ccc;
+    top: 100%; 
+    right: 0px;
+    z-index: 999;
+}
+
+.action.active .box-action {
+    display: block;
+}
+
+
