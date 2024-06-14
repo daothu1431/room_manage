@@ -49,7 +49,6 @@ if(isPost()) {
     $dataInsert = [
         'room_id' => $body['room_id'],
         'tenant_id' => $body['tenant_id'],
-        'soluongthanhvien' => $body['soluongthanhvien'],
         'tinhtrangcoc' => $body['tinhtrangcoc'],
         'ngaylaphopdong' => $body['ngaylaphopdong'],
         'ngayvao' => $body['ngayvao'],
@@ -131,12 +130,6 @@ layout('navbar', 'admin', $data);
                         </div>
 
                         <div class="form-group">
-                            <label for="">Tổng thành viên <span style="color: red">*</span></label>
-                            <input type="text" placeholder="Tổng thành viên" name="soluongthanhvien" id="" class="form-control" value="<?php echo old('dientich', $old); ?>">
-                            <?php echo form_error('dientich', $errors, '<span class="error">', '</span>'); ?>
-                        </div>
-
-                        <div class="form-group">
                             <label for="">Ngày lập hợp đồng <span style="color: red">*</span></label>
                             <input type="date" name="ngaylaphopdong" id="" class="form-control" value="<?php echo old('ngaylaphopdong', $old); ?>">
                             <?php echo form_error('ngaylaphopdong', $errors, '<span class="error">', '</span>'); ?>
@@ -144,13 +137,12 @@ layout('navbar', 'admin', $data);
                     </div>
 
                     <div class="col-5">
-                        
                         <div class="form-group">
                             <label for="">Ngày vào ở <span style="color: red">*</span></label>
                             <input type="date" name="ngayvao" id="" class="form-control" value="<?php echo old('ngayvao', $old); ?>">
                             <?php echo form_error('ngayvao', $errors, '<span class="error">', '</span>'); ?>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="">Ngày hết hạn hợp đồng <span style="color: red">*</span></label>
                             <input type="date" name="ngayra" id="" class="form-control" value="<?php echo old('ngayra', $old); ?>">

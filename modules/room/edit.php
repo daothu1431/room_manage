@@ -59,6 +59,7 @@ if(isPost()) {
     // không có lỗi nào
     $dataUpdate = [
         'tenphong' => $body['tenphong'],
+        'image' => $body['image'],
         'dientich' => $body['dientich'],
         'giathue' => $body['giathue'],
         'tiencoc' => $body['tiencoc'],
@@ -109,6 +110,19 @@ layout('navbar', 'admin', $data);
         <div class="box-content">
                 <form action="" method="post" class="row" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <div class="col-5">
+
+                        <!-- Ảnh -->
+                        <div class="form-group">
+                                <label for="name">Ảnh <span style="color: red">*</span></label>
+                                <div class="row ckfinder-group">
+                                    <div class="col-10">
+                                        <input type="text" placeholder="Ảnh phòng" name="image" id="name" class="form-control image-render" value="<?php echo old('image', $old); ?>">   
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-success btn-sm choose-image"><i class="fa fa-upload"></i></button>
+                                    </div>
+                                </div>
+                        </div>
                         <div class="form-group">
                             <label for="">Tên phòng <span style="color: red">*</span></label>
                             <input type="text" placeholder="Tên phòng" name="tenphong" id="" class="form-control" value="<?php echo old('tenphong', $old); ?>">

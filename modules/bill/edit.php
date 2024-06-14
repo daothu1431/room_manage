@@ -47,7 +47,6 @@ if(isPost()) {
     // không có lỗi nào
     $dataUpdate = [
         'room_id' => $body['room_id'],
-        'tenant_id' => $body['tenant_id'],
         'chuky' => $body['chuky'],
         'songayle' => $body['songayle'],
         'tienphong' => $body['tienphong'],
@@ -126,25 +125,6 @@ layout('navbar', 'admin', $data);
                                     ?>
                                 </select>
                                 <?php echo form_error('room_id', $errors, '<span class="error">', '</span>'); ?>
-                            </div>
-                        </div>
-                        
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label for="">Người đại diện <span style="color: red">*</span></label>
-                                <select required name="tenant_id" id="" class="form-select">
-                                    <option value="">Chọn người đại diện</option>
-                                    <?php
-                                        if(!empty($allTenant)) {
-                                            foreach($allTenant as $item) {                                            
-                                                    ?>
-                                                        <option value="<?php echo $item['id'] ?>" <?php  echo (old('tenant_id', $old) == $item['id'])?'selected':false; ?>><?php echo $item['tenkhach']?> - <?php echo $item['tenphong'] ?></option> 
-                                                    <?php                                           
-                                            }
-                                        }
-                                    ?>
-                                </select>
-                                <?php echo form_error('tenant_id', $errors, '<span class="error">', '</span>'); ?>
                             </div>
                         </div>
                     </div>

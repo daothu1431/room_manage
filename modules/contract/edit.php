@@ -44,7 +44,6 @@ if(isPost()) {
     $dataUpdate = [
         'room_id' => $body['room_id'],
         'tenant_id' => $body['tenant_id'],
-        'soluongthanhvien' => $body['soluongthanhvien'],
         'tinhtrangcoc' => $body['tinhtrangcoc'],
         'ngaylaphopdong' => $body['ngaylaphopdong'],
         'ngayvao' => $body['ngayvao'],
@@ -108,7 +107,7 @@ layout('navbar', 'admin', $data);
                                 ?>
                             </select>
                         </div>
-                                
+
                         <div class="form-group">
                             <label for="">Người đại diện <span style="color: red">*</span></label>
                             <select name="tenant_id" id="" class="form-select">
@@ -124,13 +123,7 @@ layout('navbar', 'admin', $data);
                                 ?>
                             </select>
                         </div>
-
-                        <div class="form-group">
-                            <label for="">Tổng thành viên <span style="color: red">*</span></label>
-                            <input type="text" placeholder="Tổng thành viên" name="soluongthanhvien" id="" class="form-control" value="<?php echo old('soluongthanhvien', $old); ?>">
-                            <?php echo form_error('soluongthanhvien', $errors, '<span class="error">', '</span>'); ?>
-                        </div>
-
+                                
                         <div class="form-group">
                             <label for="">Ngày lập hợp đồng <span style="color: red">*</span></label>
                             <input type="date" name="ngaylaphopdong" id="" class="form-control" value="<?php echo old('ngaylaphopdong', $old); ?>">
@@ -140,6 +133,7 @@ layout('navbar', 'admin', $data);
                     </div>
 
                     <div class="col-5">
+
                         <div class="form-group">
                             <label for="">Ngày vào ở <span style="color: red">*</span></label>
                             <input type="date" name="ngayvao" id="" class="form-control" value="<?php echo old('ngayvao', $old); ?>">

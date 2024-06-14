@@ -32,8 +32,8 @@ if (!empty($filter) && strpos($filter, 'WHERE') >= 0) {
 $filter .= " $operator bill.create_at LIKE '%$datebill%'";
 
 $allService = getRaw("SELECT * FROM services");
-$listAllBill = getRaw("SELECT *, bill.id, room.tenphong, tenant.zalo FROM bill 
-INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter ORDER BY bill.create_at DESC ");
+$listAllBill = getRaw("SELECT *, bill.id, room.tenphong FROM bill 
+INNER JOIN room ON bill.room_id = room.id  $filter ORDER BY bill.create_at DESC ");
 
 // Xử lý Thêm/Sửa dịch vụ
 if (isPost()) {
@@ -149,7 +149,7 @@ layout('navbar', 'admin', $data);
                     <h3>Quản lý dịch vụ</h3>
                     <i>Các dịch vụ khách thuê xài</i>
                 </div>
-                <button class="service-btn" style="border: none; color: #fff" onclick="openServiceModal()"><i class="fa fa-plus"></i></button>
+                <button class="service-btn" style="border: none; color: #fff" onclick="return alert('Chức năng này đang được mở rộng')"><i class="fa fa-plus"></i></button>
             </div>
 
             <?php 

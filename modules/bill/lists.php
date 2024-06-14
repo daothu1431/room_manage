@@ -76,7 +76,7 @@ if (isGet()) {
             $operator = 'WHERE';
         }
         
-        $filter .= "$operator trangthaihoadon=$statusSql";
+        $filter .= "$operator bill.trangthaihoadon=$statusSql";
     }
 }
 
@@ -96,7 +96,7 @@ if(!empty(getBody()['page'])) {
 }
 $offset = ($page - 1) * $perPage;
 $listAllBill = getRaw("SELECT *, bill.id, bill.chuky, room.tenphong, tenant.zalo FROM bill 
-INNER JOIN room ON bill.room_id = room.id INNER JOIN tenant ON bill.tenant_id = tenant.id $filter  ORDER BY bill.create_at DESC  LIMIT $offset, $perPage");
+INNER JOIN room ON bill.room_id = room.id LEFT JOIN tenant ON bill.tenant_id = tenant.id $filter  ORDER BY bill.create_at DESC  LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -135,7 +135,7 @@ layout('navbar', 'admin', $data);
                             <option value="">Chọn trạng thái</option>
                             <option value="1" <?php echo (!empty($status) && $status==1) ? 'selected':false; ?>>Đã thu</option>
                             <option value="2" <?php echo (!empty($status) && $status==2) ? 'selected':false; ?>>Chưa thu</option>
-                            <option value="3" <?php echo (!empty($status) && $status==3) ? 'selected':false; ?>>Đang nợ tiền</option>
+                            <option value="3" <?php echo (!empty($status) && $status==3) ? 'selected':false; ?>>Đang nợ</option>
                         </select>
                     </div>
                 </div>
@@ -217,10 +217,16 @@ layout('navbar', 'admin', $data);
                         <td><?php echo $item['songayle']; ?></td>
                         <td><b><?php echo number_format($item['tienphong'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['sodiencu']; ?></td>
-                        <td><?php echo $item['sodienmoi']; ?></td>
+                        <td>
+                            <?php echo $item['sodienmoi']; ?>
+                            <a target="_blank" href="<?php echo getLinkAdmin('bill','img_sdm',['id' => $item['id']]); ?>" class="fa fa-eye"></a>
+                        </td>
                         <td><b><?php echo number_format($item['tiendien'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['sonuoccu']; ?></td>
-                        <td><?php echo $item['sonuocmoi']; ?></td>
+                        <td>
+                            <?php echo $item['sonuocmoi']; ?>
+                            <a target="_blank" href="<?php echo getLinkAdmin('bill','img_snm',['id' => $item['id']]); ?>" class="fa fa-eye"></a>
+                        </td>
                         <td><b><?php echo number_format($item['tiennuoc'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['songuoi']; ?></td>
                         <td><b><?php echo number_format($item['tienrac'], 0, ',', '.') ?> đ</b></td>
@@ -241,7 +247,7 @@ layout('navbar', 'admin', $data);
                                  } elseif($item['trangthaihoadon'] == 0) {
                                     echo '<span class="btn-kyhopdong-warning">Chưa thu</span>';
                                  } else {
-                                    echo '<span class="btn-kyhopdong-err">Đang nợ tiền</span>';
+                                    echo '<span class="btn-kyhopdong-err">Đang nợ</span>';
                                  }
                             ?>
                         </td>

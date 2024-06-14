@@ -24,9 +24,6 @@ if(isPost()) {
     if(empty(trim($body['danhmucchi_id']))) {
         $errors['danhmucchi_id']['required'] = '** Bạn chưa chọn danh mục chi';
     }
-    if(empty(trim($body['room_id']))) {
-        $errors['room_id']['required'] = '** Bạn chưa chọn phòng lập phiếu chi';
-    }
     if(empty(trim($body['sotien']))) {
         $errors['sotien']['required'] = '** Bạn chưa điền số tiền';
     }
@@ -39,7 +36,7 @@ if(isPost()) {
     // không có lỗi nào
     $dataInsert = [
         'danhmucchi_id' => $body['danhmucchi_id'],
-        'room_id' => $body['room_id'],
+        // 'room_id' => $body['room_id'],
         'sotien' => $body['sotien'],
         'ghichu' => $body['ghichu'],
         'ngaychi' => $body['ngaychi'],
@@ -102,7 +99,7 @@ layout('navbar', 'admin', $data);
                             <?php echo form_error('danhmucchi_id', $errors, '<span class="error">', '</span>'); ?>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="">Chọn phòng lập phiếu chi <span style="color: red">*</span></label>
                             <select name="room_id" id="" class="form-select">
                                 <option value="">Chọn phòng</option>
@@ -117,7 +114,7 @@ layout('navbar', 'admin', $data);
                                 ?>
                             </select>
                             <?php echo form_error('room_id', $errors, '<span class="error">', '</span>'); ?>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
                             <label for="">Ghi chú <span style="color: red">*</span></label>
@@ -135,7 +132,7 @@ layout('navbar', 'admin', $data);
                         </div>
         
                         <div class="form-group">
-                            <label for="">Ngày chi <span style="color: red">*</span></label>
+                            <label for="">Ngày lập phiếu <span style="color: red">*</span></label>
                             <input type="date" name="ngaychi" id="" class="form-control" value="<?php echo old('ngaychi', $old); ?>">
                             <?php echo form_error('ngaychi', $errors, '<span class="error">', '</span>'); ?>
                         </div>

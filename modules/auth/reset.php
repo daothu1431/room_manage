@@ -21,7 +21,7 @@ if (!empty($token)){
 
             $errors = []; //Mảng lưu trữ các lỗi
 
-            //Validate mật khẩu: Bắt buộc phải nhập, >=8 ký tự
+            //Validate mật khẩu: Bắt buộc phải nhập, >=6 ký tự
             if (empty(trim($body['password']))){
                 $errors['password']['required'] = '** Mật khẩu bắt buộc phải nhập!';
             }else{

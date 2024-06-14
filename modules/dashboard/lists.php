@@ -183,9 +183,9 @@ if($userDetail['group_id'] == 7) {
         $billNear = firstRaw("SELECT * FROM bill WHERE room_id = $roomId ORDER BY create_at DESC LIMIT 1");
         $id = $billNear['id'];  
         $date = firstRaw("SELECT MONTH(create_at) AS month, YEAR(create_at) AS year FROM bill WHERE id=$id");
-        $tenantId = $billNear['tenant_id'];
+        // $tenantId = $billNear['tenant_id'];
     
-        $tenantDetail = firstRaw("SELECT * FROM tenant WHERE id = $tenantId");
+        // $tenantDetail = firstRaw("SELECT * FROM tenant WHERE id = $tenantId");
         $roomtDetail = firstRaw("SELECT * FROM room WHERE id = $roomId");
         $msg =getFlashData('msg');
         $msgType = getFlashData('msg_type');
@@ -199,8 +199,8 @@ if($userDetail['group_id'] == 7) {
         <p style="font-size: 14px;">Địa chỉ: 597 - Nguyễn Bỉnh Khiêm, Đằng Lâm, Hải An, Hải Phòng</p>
         <p>Mã hóa đơn: <b style="color: red; font-size: 18px"><?php echo $billNear['mahoadon'] ?></b></p>
         <div class="rowOne" style="display: flex; justify-content: space-around;">
-            <p style="font-size: 14px; margin: 0;">Kính gửi: <b><?php echo $tenantDetail['tenkhach'] ?></b></p>
-            <p style="font-size: 14px; margin: 0">Số điện thoại: <b>0<?php echo $tenantDetail['sdt'] ?></b></p>
+            <!-- <p style="font-size: 14px; margin: 0;">Kính gửi: <b><?php echo $tenantDetail['tenkhach'] ?></b></p>
+            <p style="font-size: 14px; margin: 0">Số điện thoại: <b>0<?php echo $tenantDetail['sdt'] ?></b></p> -->
         </div>
         <div class="rowTwo" style="display: flex; justify-content: space-around; margin-top: 10px;">
             <p style="font-size: 14px;">Đơn vị: <b><?php echo $roomtDetail['tenphong'] ?></b></b></p>
@@ -241,13 +241,23 @@ if($userDetail['group_id'] == 7) {
                 <td style="font-size: 16px;"><b><?php echo number_format($billNear['tienmang'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
-                <td style="font-size: 14px;"><b>Nợ cũ</b></td>
+                <td style="font-size: 14px;"><b>Cộng thêm</b></td>
                 <td><b><?php echo number_format($billNear['nocu'], 0, ',', '.') ?> đ</b></td>
                 <td style="font-size: 16px;"><b><?php echo number_format($billNear['nocu'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 14px;"><b>Tổng tiền</b></td>
                 <td colspan="2" style="text-align: right; font-size: 18px; color: #dc3545;"><b><?php echo number_format($billNear['tongtien'], 0, ',', '.') ?> đ</b></td>
+            </tr>
+
+            <tr style="background: #4caf5021">
+                <td style="font-size: 14px;"><b>Đã thu</b></td>
+                <td colspan="2" style="text-align: right; font-size: 18px; color: #258e0c;"><b><?php echo number_format($billNear['sotiendatra'], 0, ',', '.') ?> đ</b></td>
+            </tr>
+
+            <tr>
+                <td style="font-size: 14px;"><b>Còn lại</b></td>
+                <td colspan="2" style="text-align: right; font-size: 18px; color: #dc3545;"><b><?php echo number_format($billNear['sotienconthieu'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 14px;"><b>Thanh toán</b></td>

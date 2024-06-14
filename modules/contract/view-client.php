@@ -4,6 +4,7 @@
     $userDetail = getUserInfo($userId); 
     $roomId  = $userDetail['room_id'];
 
+    $allTenant = getRaw("SELECT * FROM tenant WHERE room_id = $roomId");
     $contractDetail  = firstRaw("SELECT * FROM contract WHERE contract.room_id = $roomId");
     $tenantId = $contractDetail['tenant_id'];
 
@@ -50,7 +51,8 @@
         <div style="text-align: left;font-size: 12pt;">
          <p><strong>BÊN A : BÊN CHO THUÊ (PHÒNG TRỌ)</strong></p>
                     <table style="width: 100%">
-                        <tbody><tr>
+                        <tbody>
+                        <tr>
                             <td colspan="2">
                                 <p>Họ và tên: Nguyễn Ngọc Chiến</p>
                             </td>
@@ -83,7 +85,10 @@
         <div style="text-align: left;font-size: 12pt;">
          <p><strong>BÊN B : BÊN THUÊ (PHÒNG TRỌ)</strong></p>
                     <table style="width: 100%">
-                        <tbody><tr>
+                        <tbody>
+                            
+                        <tr><b>Người đại diện là:</b></tr>
+                        <tr>
                             <td colspan="2">
                                 <p>Họ và tên: <?php echo $tenantDetail['tenkhach'] ?> </p>
                             </td>
@@ -113,6 +118,11 @@
                             </td>
                         </tr>
                     </tbody></table>
+                    <b>Các thành viên của phòng bao gồm:</b> <br />
+                    <br/>
+                    <?php foreach($allTenant as $tenant) { ?>
+                        <span><?php echo $tenant['tenkhach'] ?> - CCCD: <?php echo $tenant['cmnd'] ?></span> <br />
+                    <?php } ?>
         </div>
         <div style="text-align: left;font-size: 12pt;">
          <p>Hai bên cùng thỏa thuận và đồng ý với nội dung sau :</p>

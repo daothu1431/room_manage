@@ -47,8 +47,8 @@ if(!empty(getBody()['page'])) {
 }
 $offset = ($page - 1) * $perPage;
 
-$listAllPayment = getRaw("SELECT *, tenphong, tendanhmuc, payment.id FROM payment INNER JOIN room ON room.id = payment.room_id 
-INNER JOIN category_spend ON category_spend.id = payment.danhmucchi_id $filter LIMIT $offset, $perPage");
+$listAllPayment = getRaw("SELECT *, tenphong, tendanhmuc, payment.id FROM payment LEFT JOIN room ON room.id = payment.room_id 
+LEFT JOIN category_spend ON category_spend.id = payment.danhmucchi_id $filter LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -120,7 +120,6 @@ layout('navbar', 'admin', $data);
                         <th wìdth="5%">STT</th>
                         <th>Khoản</th>
                         <th>Loại</th>
-                        <th>Tên phòng</th>
                         <th>Số tiền</th>
                         <th>Ghi chú</th>
                         <th>Ngày phát sinh</th>
@@ -146,7 +145,6 @@ layout('navbar', 'admin', $data);
                         <td><?php echo $count; ?></td>
                         <td style="color: green"><b><?php echo $item['tendanhmuc']; ?></b></td>
                         <td><span style="background: #d93025; color: #fff; padding: 2px 4px; border-radius: 5px; font-size: 12px">Khoản chi</span></td>
-                        <td><?php echo $item['tenphong'] ?></td>
                         <td><b><?php echo number_format($item['sotien'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['ghichu'] ?></td>
                         <td><?php echo getDateFormat($item['ngaychi'],'d-m-Y'); ?></td> 

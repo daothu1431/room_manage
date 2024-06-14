@@ -166,6 +166,7 @@ layout('navbar', 'admin', $data);
                         </th>
                         <th></th>
                         <th wìdth="5%">STT</th>
+                        <th>Ảnh</th>
                         <th>Tên phòng</th>
                         <th>Diện tích</th>
                         <th>Giá thuê</th>
@@ -199,6 +200,7 @@ layout('navbar', 'admin', $data);
                             </div>
                         </td>
                         <td><?php echo $count; ?></td>
+                        <td><img style="width: 70px; height: 50px" src="<?php echo $item['image'] ?>" alt=""></td>
                         <td><b><?php echo $item['tenphong']; ?></b></td>
                         <td><?php echo $item['dientich'] ?> m2</td>
                         <td><b><?php echo number_format($item['giathue'], 0, ',', '.') ?> đ</b></td>

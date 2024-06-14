@@ -27,13 +27,19 @@ if ($filterType && $dateInput) {
         $year = date('Y', strtotime($dateInput));
         $month = date('m', strtotime($dateInput));
 
+        // Doanh thu
         $sql = firstRaw("SELECT SUM(sotien) as tong_thu FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) = $month");
         $tongthu = $sql['tong_thu'];
 
+        // Tiền cọc
+        $sql = firstRaw("SELECT SUM(sotien) as tien_coc FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) = $month AND danhmucthu_id = 2");
+        $tiencoc = $sql['tien_coc'];
+
+        // Tiền chi
         $sql = firstRaw("SELECT SUM(sotien) as tong_chi FROM payment WHERE YEAR(ngaychi) = $year AND MONTH(ngaychi) = $month");
         $tongchi = $sql['tong_chi'];
 
-        $loinhuan = $tongthu - $tongchi;
+        $loinhuan = $tongthu - $tongchi - $tiencoc;
 
         $labels = ["$year-$month"];
         $profits = [$loinhuan];
@@ -45,10 +51,14 @@ if ($filterType && $dateInput) {
             $sql = firstRaw("SELECT SUM(sotien) as tong_thu FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) = $month");
             $monthly_thu = $sql['tong_thu'] ?: 0;
 
+            // Tính tổng tiền đặt cọc hàng tháng
+            $sql = firstRaw("SELECT SUM(sotien) as tien_coc FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) = $month AND danhmucthu_id = 2");
+            $monthly_datcoc = $sql['tien_coc'] ?: 0;
+
             $sql = firstRaw("SELECT SUM(sotien) as tong_chi FROM payment WHERE YEAR(ngaychi) = $year AND MONTH(ngaychi) = $month");
             $monthly_chi = $sql['tong_chi'] ?: 0;
 
-            $monthly_profit = $monthly_thu - $monthly_chi;
+            $monthly_profit = $monthly_thu - $monthly_chi - $monthly_datcoc;
 
             $labels[] = "$year-$month";
             $profits[] = $monthly_profit;
@@ -59,12 +69,17 @@ if ($filterType && $dateInput) {
             return $sql['tong_thu'] ?: 0;
         }, range(1, 12)));
 
+        $tiencoc = array_sum(array_map(function($month) use ($year) {
+            $sql = firstRaw("SELECT SUM(sotien) as tien_coc FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) = $month AND danhmucthu_id = 2");
+            return $sql['tien_coc'] ?: 0;
+        }, range(1, 12)));
+
         $tongchi = array_sum(array_map(function($month) use ($year) {
             $sql = firstRaw("SELECT SUM(sotien) as tong_chi FROM payment WHERE YEAR(ngaychi) = $year AND MONTH(ngaychi) = $month");
             return $sql['tong_chi'] ?: 0;
         }, range(1, 12)));
 
-        $loinhuan = $tongthu - $tongchi;
+        $loinhuan = $tongthu - $tongchi - $tiencoc;
 
     } elseif ($filterType == 'quarter') {
         $year = date('Y', strtotime($dateInput));
@@ -76,10 +91,13 @@ if ($filterType && $dateInput) {
             $sql = firstRaw("SELECT SUM(sotien) as tong_thu FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) BETWEEN $startMonth AND $endMonth");
             $quarterly_thu = $sql['tong_thu'] ?: 0;
 
+            $sql = firstRaw("SELECT SUM(sotien) as tien_coc FROM receipt WHERE YEAR(ngaythu) = $year AND danhmucthu_id = 2 AND MONTH(ngaythu) BETWEEN $startMonth AND $endMonth");
+            $quarterly_coc = $sql['tien_coc'] ?: 0;
+
             $sql = firstRaw("SELECT SUM(sotien) as tong_chi FROM payment WHERE YEAR(ngaychi) = $year AND MONTH(ngaychi) BETWEEN $startMonth AND $endMonth");
             $quarterly_chi = $sql['tong_chi'] ?: 0;
 
-            $quarterly_profit = $quarterly_thu - $quarterly_chi;
+            $quarterly_profit = $quarterly_thu - $quarterly_chi - $quarterly_coc;
 
             $labels[] = "Quý $quarter / $year";
             $profits[] = $quarterly_profit;
@@ -91,7 +109,8 @@ if ($filterType && $dateInput) {
 
         $tongthu = firstRaw("SELECT SUM(sotien) as tong_thu FROM receipt WHERE YEAR(ngaythu) = $year AND MONTH(ngaythu) BETWEEN $startMonth AND $endMonth")['tong_thu'];
         $tongchi = firstRaw("SELECT SUM(sotien) as tong_chi FROM payment WHERE YEAR(ngaychi) = $year AND MONTH(ngaychi) BETWEEN $startMonth AND $endMonth")['tong_chi'];
-        $loinhuan = $tongthu - $tongchi;
+        $tiencoc = firstRaw("SELECT SUM(sotien) as tien_coc FROM receipt WHERE YEAR(ngaychi) = $year AND danhmucthu_id = 2 AND MONTH(ngaychi) BETWEEN $startMonth AND $endMonth")['tien_coc'];
+        $loinhuan = $tongthu - $tongchi - $tiencoc;
     }
 }
 
@@ -142,7 +161,7 @@ layout('navbar', 'admin', $data);
             
             <div class="report-receipt-spend">
                 <div class="report-receipt">
-                    <p>Tổng khoản thu (tiền vào)</p>
+                    <p>Tổng khoản thu </p>
                     <div class="report-ts">
                         <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/trend-up.svg" alt="">
                         <p><?php echo number_format($tongthu, 0, ',', '.') . 'đ'; ?></p>
@@ -154,6 +173,14 @@ layout('navbar', 'admin', $data);
                     <div class="report-ts">
                         <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/trend-down.svg" alt="">
                         <p style="color: red"><?php echo number_format($tongchi, 0, ',', '.') . 'đ'; ?></p>
+                    </div>
+                </div>
+
+                <div class="report-spend">
+                    <p>Tổng tiền cọc (đã thu)</p>
+                    <div class="report-ts">
+                        <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/trend-down.svg" alt="">
+                        <p style="color: #ed6004"><?php echo number_format($tiencoc, 0, ',', '.') . 'đ'; ?></p>
                     </div>
                 </div>
 

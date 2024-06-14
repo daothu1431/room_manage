@@ -148,12 +148,10 @@ layout('navbar', 'admin', $data);
                         <option value="">Chọn phòng</option>
                         <?php
                             if(!empty($allRoom)) {
-                                foreach($allRoom as $item) {
-                                    if($item['soluong'] < 2 ) {
+                                foreach($allRoom as $item) {                                   
                         ?>
-                                        <option value="<?php echo $item['id'] ?>" <?php echo (!empty($roomId) && $roomId == $item['id'])?'selected':'' ?>><?php echo $item['tenphong'] ?></option> 
-                        <?php
-                                    }
+                                    <option value="<?php echo $item['id'] ?>" <?php echo (!empty($roomId) && $roomId == $item['id'])?'selected':'' ?>><?php echo $item['tenphong'] ?></option> 
+                        <?php                                  
                                 }
                             }
                         ?>

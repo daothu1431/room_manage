@@ -3,7 +3,6 @@
 if(!defined('_INCODE'))
 die('Access denied...');
 
-
 $data = [
     'pageTitle' => 'Thêm hóa đơn mới'
 ];
@@ -17,10 +16,8 @@ $dongiaDien = firstRaw("SELECT giadichvu FROM services WHERE tendichvu = 'Tiền
 $dongiaRac = firstRaw("SELECT giadichvu FROM services WHERE tendichvu = 'Tiền rác'");
 $dongiaWifi = firstRaw("SELECT giadichvu FROM services WHERE tendichvu = 'Tiền Wifi'");
 
-
-$allTenant = getRaw("SELECT tenant.id, tenkhach, tenphong FROM tenant INNER JOIN contract ON contract.tenant_id = tenant.id INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
+// $allTenant = getRaw("SELECT tenant.id, tenkhach, tenphong FROM tenant INNER JOIN room ON contract.tenant_id = tenant.id INNER JOIN room ON tenant.room_id = room.id ORDER BY tenphong");
 $allRoom = getRaw("SELECT room.id, tenphong, giathue, soluong, chuky, room.ngayvao FROM room INNER JOIN contract ON contract.room_id  = room.id ORDER BY tenphong");
-
 
 // Xử lý thêm người dùng
 if(isPost()) {
@@ -34,22 +31,25 @@ if(isPost()) {
     $dataInsert = [
         'room_id' => $body['room_id'],
         'mahoadon' => generateInvoiceCode(),
-        'tenant_id' => $body['tenant_id'],
+        // 'tenant_id' => $body['tenant_id'],
         'chuky' => $body['chuky'],
         'songayle' => $body['songayle'],
         'tienphong' => $body['tienphong'],
         'sodiencu' => $body['sodiencu'],
         'sodienmoi' => $body['sodienmoi'],
+        'img_sodienmoi' => $body['img_sodienmoi'],
         'tiendien' => $body['tiendien'],
         'sonuoccu' => $body['sonuoccu'],
         'sonuocmoi' => $body['sonuocmoi'],
+        'img_sonuocmoi' => $body['img_sonuocmoi'],
         'tiennuoc' => $body['tiennuoc'],
         'songuoi' => $body['soluong'],
         'tienrac' => $body['tienrac'],
         'tienmang' => $body['tienmang'],
         'nocu' => $body['nocu'],
         'tongtien' => $body['tongtien'],
-        'create_at' => $body['create_at'],
+        'sotienconthieu' => $body['tongtien'],
+        'create_at' => date('Y-m-d H:i:s'),
     ];
 
     $insertStatus = insert('bill', $dataInsert);
@@ -88,7 +88,7 @@ layout('navbar', 'admin', $data);
                 <?php getMsg($msg, $msgType);?> 
             </div>
 
-            <div class="box-content">
+            <div class="box-content2">
                 <form action="" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     
                 <!-- hàng 1 -->
@@ -96,7 +96,7 @@ layout('navbar', 'admin', $data);
                         <div class="col-5">
                             <div class="form-group">
                                 <label for="">Chọn phòng lập hóa đơn <span style="color: red">*</span></label>
-                                <select required name="room_id" id="room_id" class="form-select" onchange="updateTienPhong(); updateChuky(); updateSoluong()">
+                                <select required name="room_id" id="room_id" class="form-select" onchange="updateTienPhong(); updateChuky(); updateSoluong(); updateCSD();">
                                     <option value="">Chọn phòng</option>
                                     <?php
                                         if(!empty($allRoom)) {
@@ -112,7 +112,7 @@ layout('navbar', 'admin', $data);
                             </div>
                         </div>
                         
-                        <div class="col-5">
+                        <!-- <div class="col-5">
                             <div class="form-group">
                                 <label for="">Người đại diện <span style="color: red">*</span></label>
                                 <select required name="tenant_id" id="" class="form-select">
@@ -129,7 +129,7 @@ layout('navbar', 'admin', $data);
                                 </select>
                                 <?php echo form_error('tenant_id', $errors, '<span class="error">', '</span>'); ?>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                 <!-- Hàng 2 -->
@@ -173,6 +173,18 @@ layout('navbar', 'admin', $data);
                             </div>
 
                             <div class="form-group">
+                                <label for="name">Ảnh <span style="color: red">*</span></label>
+                                <div class="row ckfinder-group">
+                                    <div class="col-10">
+                                        <input type="text" placeholder="Ảnh chỉ số điện mới" name="img_sodienmoi" id="name" class="form-control image-render" value="<?php echo old('img_sodienmoi', $old); ?>">   
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-success btn-sm choose-image"><i class="fa fa-upload"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="tiennuoc">Tiền điện (4000đ/1KWh)</label>
                                 <input type="text" class="form-control" id="tiendien"  name="tiendien" >
                              </div>
@@ -189,6 +201,18 @@ layout('navbar', 'admin', $data);
                             <div class="form-group">
                                 <label for="sonuocmoi">Số nước mới (m/3)</label>
                                 <input type="number" min="0" id="sonuocmoi" class="form-control" name="sonuocmoi" required oninput="calculateTienNuoc()">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Ảnh <span style="color: red">*</span></label>
+                                <div class="row ckfinder-group">
+                                    <div class="col-10">
+                                        <input type="text" placeholder="Ảnh chỉ số nước mới" name="img_sonuocmoi" id="name" class="form-control image-render" value="<?php echo old('img_sonuocmoi', $old); ?>">   
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-success btn-sm choose-image"><i class="fa fa-upload"></i></button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -215,7 +239,7 @@ layout('navbar', 'admin', $data);
                     <div class="col-3">
                         <div class="water">
                             <div class="form-group">
-                                <label for="tienmang">Tiền Wifi (100.000đ/1tháng)</label>
+                                <label for="tienmang">Tiền Wifi (50.000đ/1tháng)</label>
                                 <input type="text" class="form-control" id="tienmang" name="tienmang" >
                              </div>
                         </div>
@@ -238,12 +262,12 @@ layout('navbar', 'admin', $data);
                         </div>
                     </div>
 
-                    <div class="col-5">
+                    <!-- <div class="col-5">
                         <div class="form-group">
                             <label for="create_at">Ngày lập hóa đơn</label>
                             <input type="date" class="form-control" id="create_at" required name="create_at" >
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
                     <div class="from-group" style="margin-top: 20px">                    
@@ -276,13 +300,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTienPhong();
         firstMonth();
         updateSoluong();
+        updateChuky();
     }
 
     function updateTienPhong() {
         const roomSelect = document.getElementById('room_id');
         const selectedOption = roomSelect.options[roomSelect.selectedIndex];
         const giaPhong = parseFloat(selectedOption.getAttribute('data-giaphong')) || 0;
-        const sothang = parseFloat(document.getElementById('chuky').value) || 0;
+        const sothang = parseFloat(document.getElementById('chuky').value) || 1;
         const songayle = parseFloat(document.getElementById('songayle').value) || 0;
 
         // Tính toán tiền phòng
@@ -377,6 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('tienmang').value = numberWithCommas(tienmang) + ' đ';
         calculateTotal();
     }
+    
 
     function calculateTotal() {
         const tienphong = parseFloat(document.getElementById('tienphong').value.replace(/,/g, '').replace(' đ', '')) || 0;
@@ -404,11 +430,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sodiencu').addEventListener('input', calculateTienDien);
     document.getElementById('sodienmoi').addEventListener('input', calculateTienDien);
     document.getElementById('soluongNguoi').addEventListener('input', calculateTienRac);
-    document.getElementById('chuky').addEventListener('input', function() {
-        calculateTienMang();
-        updateTienPhong();
-        calculateTienRac();
-    });
+    // document.getElementById('chuky').addEventListener('input', function() {
+    //     calculateTienMang();
+    //     updateTienPhong();
+    //     calculateTienRac();
+    // });
     document.getElementById('songayle').addEventListener('input', calculateTienMang);
     document.getElementById('songayle').addEventListener('input', updateTienPhong);
     document.getElementById('nocu').addEventListener('input', calculateTotal);

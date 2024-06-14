@@ -86,7 +86,7 @@ if(!empty(getBody()['page'])) {
     $page = 1;
 }
 $offset = ($page - 1) * $perPage;
-$listAllTenant = getRaw("SELECT *, tenant.id, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id  $filter LIMIT $offset, $perPage");
+$listAllTenant = getRaw("SELECT *, tenant.id, tenphong, tenant.ngayvao as ngayvao FROM tenant LEFT JOIN room ON tenant.room_id = room.id  $filter ORDER BY tenphong LIMIT $offset, $perPage");
 
 // Xử lý query string tìm kiếm với phân trang
 $queryString = null;
@@ -177,6 +177,7 @@ layout('navbar', 'admin', $data);
                         <th>Mặt trước CCCD</th>
                         <th>Mặt sau CCCD</th>
                         <th>Phòng đang ở</th>
+                        <th>Ngày vào ở</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -217,8 +218,16 @@ layout('navbar', 'admin', $data);
                         <td><?php echo $item['ngaycap'] ?></td>
                         <td ><a href="<?php echo getLinkAdmin('tenant','view-pre',['id' => $item['id']]); ?>" target="_blank"><?php echo (isFontIcon($item['anhmattruoc']))?$item['anhmattruoc']:'<img src="'.$item['anhmattruoc'].'"  width=70 height=50/>' ?></a></td>
                         <td ><a href="<?php echo getLinkAdmin('tenant','view-after',['id' => $item['id']]); ?>" target="_blank"><?php echo (isFontIcon($item['anhmatsau']))?$item['anhmatsau']:'<img src="'.$item['anhmatsau'].'"  width=70 height=50/>' ?></a></td>
-                        <td><p class="btn btn-info btn-sm" style="color: #fff; font-size: 12px"><?php echo $item['tenphong'] ?></p></td>
-
+                        <td>
+                            <?php if(!empty($item['tenphong'])) { ?>
+                                <p class="btn btn-info btn-sm" style="color: #fff; font-size: 12px"><?php echo $item['tenphong'] ?></p>
+                            <?php } else {
+                                ?>
+                                    <i>Không</i>
+                                <?php
+                            } ?>
+                        </td>
+                        <td><?php echo $item['ngayvao'] ?></td>
                         <td class="">
                             <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
                             <a href="<?php echo getLinkAdmin('tenant','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm" ><i class="fa fa-edit"></i> </a>

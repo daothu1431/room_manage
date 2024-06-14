@@ -1,5 +1,5 @@
 <?php
-$listAlltenant = getRaw("SELECT * FROM tenant");
+$listAlltenant = getRaw("SELECT *, tenphong FROM tenant INNER JOIN room ON tenant.room_id = room.id");
 $dataTenant = json_encode($listAlltenant);
 
 $tenantFinal = json_decode($dataTenant,true);
@@ -85,6 +85,7 @@ $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(15);
 $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(15);
 $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(15);
 $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(15);
+$spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(15);
 
 //header Text
 $spreadsheet->getActiveSheet()
@@ -97,14 +98,20 @@ $spreadsheet->getActiveSheet()
             ->setCellValue('G2', 'Nghề nghiệp')
             ->setCellValue('H2', 'CCCD/CMND')
             ->setCellValue('I2', 'Ngày cấp')
-            ->setCellValue('J2', 'Phòng đang ở');
+            ->setCellValue('J2', 'Phòng đang ở')
+            ->setCellValue('K2', 'Ngày vào ở');
 
 // background color
-$spreadsheet->getActiveSheet()->getStyle('A2:J2')->applyFromArray($tableHead);
+$spreadsheet->getActiveSheet()->getStyle('A2:K2')->applyFromArray($tableHead);
 
 //
 $spreadsheet->getActiveSheet()
             ->getStyle('E')
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD);
+
+            $spreadsheet->getActiveSheet()
+            ->getStyle('K')
             ->getNumberFormat()
             ->setFormatCode(NumberFormat::FORMAT_DATE_YYYYMMDD);
 
@@ -127,7 +134,8 @@ foreach($tenantFinal as $item) {
       $spreadsheet->getActiveSheet()->setCellValue('G'.$row, $item['nghenghiep']);
       $spreadsheet->getActiveSheet()->setCellValue('H'.$row, $item['cmnd']);
       $spreadsheet->getActiveSheet()->setCellValue('I'.$row, $item['ngaycap']);
-      $spreadsheet->getActiveSheet()->setCellValue('J'.$row, $item['room_id']);    
+      $spreadsheet->getActiveSheet()->setCellValue('J'.$row, $item['tenphong']);    
+      $spreadsheet->getActiveSheet()->setCellValue('K'.$row, $item['ngayvao']);    
 
                // set row style
              if($row % 2 == 0) {

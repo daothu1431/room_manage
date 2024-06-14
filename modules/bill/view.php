@@ -5,10 +5,9 @@
 
     $billDetail  = firstRaw("SELECT * FROM bill WHERE id=$id");
     $date = firstRaw("SELECT MONTH(create_at) AS month, YEAR(create_at) AS year FROM bill WHERE id=$id");
-    $tenantId = $billDetail['tenant_id'];
     $roomId = $billDetail['room_id'];
 
-    $tenantDetail = firstRaw("SELECT * FROM tenant WHERE id = $tenantId");
+
     $roomtDetail = firstRaw("SELECT * FROM room WHERE id = $roomId");
 
 ?>
@@ -27,10 +26,6 @@
         <h3 style="margin-top: 10px;">Tháng <?php echo $date['month'] ?>/<?php echo $date['year'] ?></h3>
         <p style="font-size: 14px;">Địa chỉ: 597 - Nguyễn Bỉnh Khiêm, Đằng Lâm, Hải An, Hải Phòng</p>
         <p>Mã hóa đơn: <b style="color: red; font-size: 18px"><?php echo $billDetail['mahoadon'] ?></b></p>
-        <div class="rowOne" style="display: flex; justify-content: space-around;">
-            <p style="font-size: 14px; margin: 0;">Kính gửi: <b><?php echo $tenantDetail['tenkhach'] ?></b></p>
-            <p style="font-size: 14px; margin: 0">Số điện thoại: <b>0<?php echo $tenantDetail['sdt'] ?></b></p>
-        </div>
         <div class="rowTwo" style="display: flex; justify-content: space-around; margin-top: 0px;">
             <p style="font-size: 14px;">Đơn vị: <b><?php echo $roomtDetail['tenphong'] ?></b></p>
             <p style="font-size: 14px;">Lý do thu tiền: <b>Thu tiền hàng tháng</b></p>
@@ -70,13 +65,23 @@
                 <td style="font-size: 16px;"><b><?php echo number_format($billDetail['tienmang'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
-                <td style="font-size: 14px;"><b>Nợ cũ</b></td>
+                <td style="font-size: 14px;"><b>Cộng thêm</b></td>
                 <td><b><?php echo number_format($billDetail['nocu'], 0, ',', '.') ?> đ</b></td>
                 <td style="font-size: 16px;"><b><?php echo number_format($billDetail['nocu'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 14px;"><b>Tổng tiền</b></td>
                 <td colspan="2" style="text-align: right; font-size: 18px; color: #dc3545;"><b><?php echo number_format($billDetail['tongtien'], 0, ',', '.') ?> đ</b></td>
+            </tr>
+
+            <tr style="background: #4caf5021">
+                <td style="font-size: 14px;"><b>Đã thu</b></td>
+                <td colspan="2" style="text-align: right; font-size: 18px; color: #258e0c;"><b><?php echo number_format($billDetail['sotiendatra'], 0, ',', '.') ?> đ</b></td>
+            </tr>
+
+            <tr>
+                <td style="font-size: 14px;"><b>Còn lại</b></td>
+                <td colspan="2" style="text-align: right; font-size: 18px; color: #dc3545;"><b><?php echo number_format($billDetail['sotienconthieu'], 0, ',', '.') ?> đ</b></td>
             </tr>
             <tr>
                 <td style="font-size: 14px;"><b>Thanh toán</b></td>

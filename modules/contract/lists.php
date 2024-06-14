@@ -70,7 +70,60 @@ if (isGet()) {
     }
 }
 
+// Xử lý hành động thanh lý hợp đồng
+if (isset($_POST['terminate'])) {
+    $contractId = $_POST['contract_id'];
+    $contract = getContractById($contractId);
 
+    if ($contract) {
+        // Thêm vào bảng lịch sử
+        addContractToHistory($contract);
+
+        // Xóa khỏi bảng hợp đồng
+        deleteContract($contractId);
+
+        setFlashData('msg', 'Thanh lý hợp đồng thuê trọ thành công');
+        setFlashData('msg_type', 'suc');
+    } else {
+        setFlashData('msg', 'Không tìm thấy hợp đồng');
+        setFlashData('msg_type', 'err');
+    }
+
+    redirect('?module=contract');
+}
+
+function getContractById($id) {
+    // Lấy hợp đồng từ database
+    return firstRaw("SELECT * FROM contract WHERE id = $id");
+}
+
+function addContractToHistory($contract) {
+    // Thêm hợp đồng vào bảng lịch sử
+    $data = [
+        'contract_id' => $contract['id'],
+        'room_id' => $contract['room_id'],
+        'soluongthanhvien' => $contract['soluongthanhvien'],
+        'ngaylaphopdong' => $contract['ngaylaphopdong'],
+        'ngayvao' => $contract['ngayvao'],
+        'ngayra' => $contract['ngayra'],
+        'ngaythanhly' => date('Y-m-d')
+    ];
+    insert('rental_history', $data);
+}
+
+function deleteContract($id) {
+    // Xóa hợp đồng khỏi database
+    delete('contract', "id = $id");
+}
+
+// Lấy thông tin khách của hợp đồng
+function getTenantsByRoomId($roomId) {
+    return getRaw("SELECT * FROM tenant WHERE room_id = $roomId");
+}
+
+// echo '<pre>';
+// print_r($tenantOfcontract); 
+// echo '</pre>'; die;
 /// Xử lý phân trang
 $allTenant = getRows("SELECT id FROM contract $filter");
 $perPage = _PER_PAGE; // Mỗi trang có 3 bản ghi
@@ -88,7 +141,7 @@ if(!empty(getBody()['page'])) {
     $page = 1;
 }
 $offset = ($page - 1) * $perPage;
-$listAllcontract = getRaw("SELECT *, contract.id, tenphong, tenkhach, giathue, tiencoc, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, zalo, tinhtrangcoc FROM contract 
+$listAllcontract = getRaw("SELECT *, contract.id, tenphong, giathue, tenkhach, tiencoc, soluong, contract.ngayvao as ngayvaoo, contract.ngayra as thoihanhopdong, tinhtrangcoc FROM contract 
 INNER JOIN room ON contract.room_id = room.id
 INNER JOIN tenant ON contract.tenant_id = tenant.id
 $filter LIMIT $offset, $perPage");
@@ -207,6 +260,7 @@ layout('navbar', 'admin', $data);
                         <th wìdth="5%">STT</th>
                         <th>Tên phòng</th>
                         <th>Người đại diện</th>
+                        <th>Thành viên</th>
                         <th>Tổng thành viên</th>
                         <th>Giá thuê</th>
                         <th>Giá tiền cọc</th>
@@ -226,6 +280,7 @@ layout('navbar', 'admin', $data);
                             $count = 0; // Hiển thi số thứ tự
                             foreach($listAllcontract as $item):
                                 $count ++;  
+                                $tenants = getTenantsByRoomId($item['room_id']);
                     ?>
 
                     <tr>
@@ -240,8 +295,17 @@ layout('navbar', 'admin', $data);
                         </td>
                         <td><?php echo $count; ?></td>
                         <td><b><?php echo $item['tenphong']; ?></b></td>
-                        <td><?php echo $item['tenkhach'] ?></td>
-                        <td><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/user.svg" alt=""> <?php echo $item['soluongthanhvien'] ?> người</td>
+                        <td><b><?php echo $item['tenkhach']; ?></b></td>
+                        <td>
+                            <?php if(!empty($tenants)) {
+                                foreach($tenants as $tenant) {
+                                    ?>
+                                        <span><?php echo $tenant['tenkhach'] ?></span> <br/>
+                                    <?php
+                                }
+                            } else {echo '<i>Chưa có ai</i>';} ?>
+                        </td>
+                        <td><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/user.svg" alt=""> <?php echo $item['soluong'] ?> người</td>
                         <td><b><?php echo number_format($item['giathue'], 0, ',', '.') ?> đ</b></td>
                         <td><b><?php echo number_format($item['tiencoc'], 0, ',', '.') ?> đ</b></td>
                         <td><?php echo $item['tinhtrangcoc'] == 0 ? '<span class="btn-kyhopdong-err">Chưa thu tiền</span>' : '<span class="btn-kyhopdong-suc">Đã thu tiền</span>' ?></td>
@@ -261,7 +325,8 @@ layout('navbar', 'admin', $data);
                                     echo '<span class="btn-kyhopdong-warning">' . $contractStatus . '</span>';
                                 }
                             ?>
-                        </td>           
+                        </td>   
+       
                         <td class="">
                             <div class="action">
                                 <button type="button" class="btn btn-secondary btn-sm"><i class="fa fa-ellipsis-v"></i></button>
@@ -269,16 +334,19 @@ layout('navbar', 'admin', $data);
                                     <!-- Add your actions here -->
                                     <a title="Xem hợp đồng" href="<?php echo getLinkAdmin('contract','view',['id' => $item['id']]); ?>" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-solid fa-eye"></i></a>
                                     <a title="In hợp đồng" target="_blank" href="<?php echo getLinkAdmin('contract','print',['id' => $item['id']]) ?>" class="btn btn-secondary btn-sm"><i class="fa fa-print"></i></a>
-                                    <a target="_blank" href="<?php echo $item['zalo'] ?>"><img style="width: 30px; height: 30px" src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/zalo.jpg" alt=""></a>
                                     <a href="<?php echo getLinkAdmin('contract','edit',['id' => $item['id']]); ?>" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
                                     <a href="<?php echo getLinkAdmin('contract','delete',['id' => $item['id']]); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không ?')"><i class="fa fa-trash"></i></a>
+                                    <form method="POST" action="">
+                                        <button type="submit" name="terminate" class="btn btn-success btn-sm" onclick="return confirm('Bạn có chắc chắn muốn thanh lý hợp đồng này không?')" title="Thanh lý hợp đồng"><i class="fa fa-times"></i></button>
+                                        <input type="hidden" name="contract_id" value="<?php echo $item['id']; ?>">
+                                    </form>
                                 </div>
                             </div>
                         </td>
                                           
                     <?php endforeach; else: ?>
                         <tr>
-                            <td colspan="15">
+                            <td colspan="16">
                                 <div class="alert alert-danger text-center">Không có dữ liệu hợp đồng</div>
                             </td>
                         </tr>

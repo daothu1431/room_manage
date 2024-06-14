@@ -117,7 +117,7 @@ layout('navbar', 'admin', $data);
                     <h3>Quản lý nhóm người dùng</h3>
                     <i>Các danh mục thu được áp dụng</i>
                 </div>
-                <button id="openModalBtn" class="service-btn" style="border: none; color: #fff"><i class="fa fa-plus"></i></button>
+                <button onclick="return alert('Chức năng này đang trong thời gian phát triển thêm')" class="service-btn" style="border: none; color: #fff"><i class="fa fa-plus"></i></button>
             </div>
 
             <div class="collect-list">
@@ -142,9 +142,9 @@ layout('navbar', 'admin', $data);
                                     <div class="edit">
                                         <a title="Phân quyền" href="<?php echo getLinkAdmin('groups','permission',['id' => $item['id']]); ?>"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/permission.png" style="width: 100%; object-fit: cover" alt=""></a>                                 
                                     </div>
-                                    <div class="del">
-                                        <a href="<?php echo getLinkAdmin('groups','delete',['id' => $item['id']]); ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ không ?')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-delete.svg" alt=""></a>
-                                    </div>
+                                    <!-- <div class="del">
+                                        <a href="<?php echo getLinkAdmin('groups','delete',['id' => $item['id']]); ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ không ?')"><img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/service-delete.svg" alt="" disable></a>
+                                    </div> -->
                                 </div>
                             </div>
                         

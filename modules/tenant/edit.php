@@ -48,6 +48,9 @@ if(isPost()) {
   
    // Kiểm tra mảng error
   if(empty($errors)) {
+    // Trường hợp không chọn phòng
+    $room_id = !empty($body['room_id']) ? $body['room_id'] : NULL;
+
     // không có lỗi nào
     $dataUpdate = [
         'tenkhach' => $body['tenkhach'],
@@ -58,10 +61,11 @@ if(isPost()) {
         'nghenghiep' => $body['nghenghiep'],
         'cmnd' => $body['cmnd'],
         'ngaycap' => $body['ngaycap'],
+        'ngayvao' => $body['ngayvao'],
         'anhmattruoc' => $body['anhmattruoc'],
         'anhmatsau' => $body['anhmatsau'],
         'zalo' => $body['zalo'],
-        'room_id' => $body['room_id'],
+        'room_id' => $room_id,
     ];
 
     $condition = "id=$id";
@@ -203,6 +207,12 @@ layout('navbar', 'admin', $data);
                                 ?>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                    <label for="">Ngày vào ở <span style="color: red">*</span></label>
+                    <input type="date" name="ngayvao" id="" class="form-control" value="<?php echo old('ngayvao', $old); ?>">
+                    <?php echo form_error('ngayvao', $errors, '<span class="error">', '</span>'); ?>
+                </div>
                     
                     </div>                  
                     <div class="from-group">                    

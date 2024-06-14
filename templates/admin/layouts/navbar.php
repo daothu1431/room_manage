@@ -1,7 +1,8 @@
 <?php
-function isActive($page) {
-  return strpos($_SERVER['REQUEST_URI'], $page) !== false ? 'active' : '';
-}
+// function isActive($module) {
+//   return strpos($_SERVER['REQUEST_URI'], $module) !== false ? 'active' : '';
+// }
+
 ?>
 
 <style> 
@@ -17,7 +18,7 @@ function isActive($page) {
     <div class="container-fluid">
       <div class="menu__list">
         <!-- Item 1 -->
-        <a href="<?php echo getLinkAdmin('room') ?>" class="link__menu <?php echo isActive('room'); ?>">
+        <a href="<?php echo getLinkAdmin('room') ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/room.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Quản lý phòng</p>
@@ -25,7 +26,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 2 -->
-        <a href="<?php echo getLinkAdmin('tenant') ?>" class="link__menu <?php echo isActive('tenant'); ?>">
+        <a href="<?php echo getLinkAdmin('tenant') ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/client.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Quản lý khách thuê</p>
@@ -33,7 +34,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 3 -->
-        <a href="<?php echo getLinkAdmin('contract'); ?>" class="link__menu <?php echo isActive('contract'); ?>">
+        <a href="<?php echo getLinkAdmin('contract'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/contract.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Quản lý hợp đồng</p>
@@ -41,7 +42,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 4 -->
-        <a href="<?php echo getLinkAdmin('services'); ?>" class="link__menu <?php echo isActive('services'); ?>">
+        <a href="<?php echo getLinkAdmin('services'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/client.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Quản lý dịch vụ</p>
@@ -49,7 +50,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 5 -->
-        <a href="<?php echo getLinkAdmin('bill'); ?>" class="link__menu <?php echo isActive('bill'); ?>">
+        <a href="<?php echo getLinkAdmin('bill'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Quản lý hóa đơn</p>
@@ -57,7 +58,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 6 -->
-        <a href="<?php echo getLinkAdmin('sumary'); ?>" class="link__menu <?php echo isActive('sumary'); ?>">
+        <a href="<?php echo getLinkAdmin('sumary'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/room.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Thu/Chi - Tổng kết</p>
@@ -65,7 +66,7 @@ function isActive($page) {
         </a>
 
         <!-- Item 7 -->
-        <a href="<?php echo getLinkAdmin('users'); ?>" class="link__menu <?php echo isActive('users'); ?>">
+        <a href="<?php echo getLinkAdmin('users'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Người dùng hệ thống</p>
@@ -73,10 +74,18 @@ function isActive($page) {
         </a>
 
         <!-- Item 8 -->
-        <a href="<?php echo getLinkAdmin('groups'); ?>" class="link__menu <?php echo isActive('groups'); ?>">
+        <a href="<?php echo getLinkAdmin('groups'); ?>" class="link__menu ">
           <div class="menu__item">
             <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
             <p class="menu__item-title">Nhóm người dùng</p>
+          </div>
+        </a>
+
+        <!-- Item 9 -->
+        <a href="<?php echo getLinkAdmin('rental_history'); ?>" class="link__menu ">
+          <div class="menu__item">
+            <img src="<?php echo _WEB_HOST_ADMIN_TEMPLATE; ?>/assets/img/invoice.png" class="menu__item-image" alt="">
+            <p class="menu__item-title">Lịch sử hợp đồng</p>
           </div>
         </a>
       </div>
